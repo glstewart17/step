@@ -1,9 +1,54 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 #content {
   margin-left: auto;
   margin-right: auto;
   width: 650px;
 }
 
-#greeting-container {
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(54, 112, 167);
+  color: white;
+  text-align: center;
+}
+
+.footer p {
   margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.top-navigation {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.top-navigation a {
+  float: left;
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 16px; 
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.top-navigation a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.top-navigation a.active {
+  background-color: rgb(54, 112, 167);
+  color: white;
+}
+
+#quote-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
