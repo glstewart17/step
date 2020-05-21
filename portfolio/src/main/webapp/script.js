@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * Adds a random quote to the page.
  */
-function addRandomGreeting() {
+function addRandomQuote() {
   const quotes =
       [ 'Bears. Beets. Battlestar Galactica.', 
         "Sometimes I'll start a sentence and I don't even know where it's going. I just hope I find it along the way.", 
         "I'm not supersitious, but I am a little stitious.", 
         'The worst thing about prison was the dementors.', 
-        "I talk a lot. so I've learned to tune myself out."];
+        "I talk a lot. So I've learned to tune myself out."];
 
-  // Pick a random greeting.
+  // Pick a random quote.
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
   // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = quote;
+  const quoteContainer = document.getElementById('quote-container');
+  quoteContainer.innerText = quote;
 }
