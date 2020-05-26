@@ -9,6 +9,39 @@ body {
   width: 650px;
 }
 
+.column {
+  float: left;
+  width: 50%;
+  padding: 15px 0px;
+}
+
+.column a{
+  text-decoration: none;
+  color: black;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+}
+
+.card-container {
+  padding: 2px 16px;
+}
+
 .footer {
   position: fixed;
   left: 0;
