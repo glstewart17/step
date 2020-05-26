@@ -31,15 +31,16 @@ img {
 .top-navigation {
   overflow: hidden;
   background-color: #333;
+  height: 60px;
 }
 
 .top-navigation a {
   float: left;
   color: #ffffff;
   text-align: center;
-  padding: 14px 16px; 
+  padding: 20px 30px; 
   text-decoration: none;
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .top-navigation a:hover {
@@ -47,13 +48,22 @@ img {
   color: black;
 }
 
+.top-navigation a.active {
+  background-color: rgb(54, 112, 167);
+  color: white;
+}
+
 .top-navigation-right {
   float: right;
 }
 
-.top-navigation a.active {
-  background-color: rgb(54, 112, 167);
-  color: white;
+.top-navigation-right a {
+  padding: 10px 15px; 
+}
+
+.top-navigation-right img {
+  max-height: 40px;
+  max-width: 40px;
 }
 
 #quote-container {
