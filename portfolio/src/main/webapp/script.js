@@ -15,18 +15,25 @@
 /**
  * Adds a random quote to the page.
  */
-function addRandomQuote() {
-  const quotes =
-      [ 'Bears. Beets. Battlestar Galactica.', 
-        "Sometimes I'll start a sentence and I don't even know where it's going. I just hope I find it along the way.", 
-        "I'm not supersitious, but I am a little stitious.", 
-        'The worst thing about prison was the dementors.', 
-        "I talk a lot. So I've learned to tune myself out."];
 
-  // Pick a random quote.
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+var slideIndex;
 
-  // Add it to the page.
-  const quoteContainer = document.getElementById('quote-container');
-  quoteContainer.innerText = quote;
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
 }

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="currentSlide(1)">
     <div class="top-navigation">
       <a class="active" href="index.html">Home</a>
       <a href="#work">Work</a>
@@ -20,16 +20,71 @@
           <img src="images/github-logo.png" alt="Github Account">
         </a>
       </div>
-    </div>  
+    </div>
     <div id="content">
-      <h1>Gabriel's Portfolio</h1>  
-      <img src="images/lion.png"/>
-      <p>Hi, my name is Gabe and I am a rising junior at Penn State and a STEP intern at Google.</p>
-      <p>Learn more about me <a href="about.html">here</a></p>
-      <h2>Fun</h2>
-      <p>Click here to get a random quote from the Office:</p>
-      <button onclick="addRandomQuote()">Random Quote</button>
-      <div id="quote-container"> </div>
+      <h1>Gabriel's Portfolio</h1>
+      <div class="slideshow">
+        <div class="slideshow-container">
+          <div class="mySlides fade">
+            <img src="images/lion.png">
+          </div>
+          <div class="mySlides fade">
+            <img src="images/c2c.jpg">
+          </div>
+          <div class="mySlides fade">
+            <img src="images/lion.png">
+          </div>
+          <div class="slideshow-container-subtitle">
+            <p>Comment</p>
+            <span class="dot" onclick="currentSlide(1)"></span> 
+            <span class="dot" onclick="currentSlide(2)"></span> 
+            <span class="dot" onclick="currentSlide(3)"></span> 
+          </div>
+        </div>
+        <div class="slideshow-subtitle">
+          <p>Hi, my name is Gabriel and I am a rising junior at Penn State and a STEP intern at Google. 
+            Feel free to look at my work and learn more about me.
+          </p>
+          <div class="card">
+            <a href="about.html">
+              <div class="card-container">
+                <h4><b>About Me</b></h4> 
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <h2>My Work</h2>
+      <div class="column-small">
+        <a href="leadership.html">
+          <div class="card">
+            <div class="card-container">
+              <h4><b>Leadership</b></h4> 
+              <p>Learn about my leadership experiences
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="column-small">
+        <a href="projects.html">
+          <div class="card">
+            <div class="card-container">
+              <h4><b>Projects</b></h4> 
+              <p>See some projects I've completed
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="column-small">
+        <a href="blogging.html">
+          <div class="card">
+            <div class="card-container">
+              <h4><b>Blogging</b></h4> 
+              <p>Read some of the blogs I've written
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
     <div class="footer">
       <p>© 2020 Copyright, Gabriel Stewart</p>

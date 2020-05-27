@@ -30,16 +30,26 @@ body {
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-.card img {
-  width: 100%;
-  border-radius: 5px 5px 0 0;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
 }
 
 .card-container {
   padding: 2px 16px;
+}
+
+.column-small {
+  float: left;
+  width: 33.33%;
+  padding-bottom: 20px;
+}
+
+.column-small a{
+  text-decoration: none;
+}
+
+.column-small .card{
+  background-color: rgb(54, 112, 167);
+  color: white;
 }
 
 .footer {
@@ -58,7 +68,9 @@ body {
 }
 
 img {
-  width: 650px;
+  width: 100%;
+  height:100%;
+  border-radius: 5px 5px 0px 0px;
 }
 
 .top-navigation {
@@ -102,4 +114,105 @@ img {
 #quote-container {
   margin-top: 40px;
   margin-bottom: 40px;
+}
+
+
+
+* {box-sizing:border-box}
+
+/* Slideshow container */
+.slideshow {
+  position: relative;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  margin: 10px 0px 20px 0px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+}
+
+.slideshow-container-subtitle {
+  position: absolute;
+  bottom: 5px;
+  background: rgba(0, 0, 0, 0.6); /* Black background with 0.5 opacity */
+  color: #f1f1f1;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  text-align:center;
+}
+
+
+.slideshow-subtitle {
+  padding: 2px 16px;
+}
+
+.slideshow-subtitle a{
+  text-decoration: none;
+  color: white;
+}
+
+.slideshow-subtitle .card{
+  background-color: rgb(54, 112, 167);
+  width: 25%;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0px 4px;
+  background-color: #717171;
+  border-color: #bbb;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 2px;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color:  #bbb;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
 }
