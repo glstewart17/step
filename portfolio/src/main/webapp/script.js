@@ -16,16 +16,28 @@
  * Adds a random quote to the page.
  */
 
-var slideIndex;
+let slideIndex;
 
 function currentSlide(n) {
   showSlides(slideIndex = n);
 }
 
 function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("dot");
+  const comments = ['Selfie with the Nittany Lion at Penn State',
+    'High School graduation photo at the podium', 
+    'Convert to Code team photo',
+    'PIAA runner-up in volleyball'];
+
+  // Pick a random greeting.
+  const comment = comments[n - 1];
+
+  // Add it to the page.
+  const commentContainer = document.getElementById('comment-container');
+  commentContainer.innerText = comment;
+
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
   if (n > slides.length) {slideIndex = 1}    
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {

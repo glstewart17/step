@@ -111,9 +111,10 @@ img {
   max-width: 40px;
 }
 
-#quote-container {
-  margin-top: 40px;
-  margin-bottom: 40px;
+#comment-container {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  color: #bbb;
 }
 
 
@@ -139,9 +140,9 @@ img {
   bottom: 5px;
   background: rgba(0, 0, 0, 0.6); /* Black background with 0.5 opacity */
   color: #f1f1f1;
-  width: 80%;
-  margin-left: 10%;
-  margin-right: 10%;
+  width: 60%;
+  margin-left: 20%;
+  margin-right: 20%;
   margin-bottom: 15px;
   padding-bottom: 10px;
   text-align:center;
@@ -169,16 +170,6 @@ img {
   display: none;
 }
 
-/* Caption text */
-.text {
-  color: #f2f2f2;
-  font-size: 15px;
-  padding: 8px 12px;
-  position: absolute;
-  bottom: 8px;
-  width: 100%;
-  text-align: center;
-}
 
 /* The dots/bullets/indicators */
 .dot {
