@@ -1,33 +1,10 @@
+* {
+  box-sizing:border-box
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-#page {
-  position: relative;
-  min-height: 100vh;
-}
-
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
-  padding-bottom: 150px;
-}
-
-.secret {
-  color: white;
-}
-
-.column {
-  float: left;
-  width: 50%;
-  padding: 15px 0px;
-}
-
-.column a{
-  text-decoration: none;
-  color: black;
 }
 
 .card {
@@ -47,6 +24,17 @@ body {
   padding: 2px 16px;
 }
 
+.column {
+  float: left;
+  width: 50%;
+  padding: 15px 0px;
+}
+
+.column a{
+  text-decoration: none;
+  color: black;
+}
+
 .column-small {
   float: left;
   width: 33.33%;
@@ -62,6 +50,55 @@ body {
   color: white;
 }
 
+#comment-container {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  color: #bbb;
+}
+
+#content {
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+  padding-bottom: 150px;
+}
+
+/* Dot and fade animation, found on w3school */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0px 4px;
+  background-color: #717171;
+  border-color: #bbb;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 2px;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color:  #bbb;
+}
+
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
 .footer {
   position: absolute;
   left: 0;
@@ -72,12 +109,6 @@ body {
   height: 150px;
   padding-top: 20px;
   padding-bottom: 30px;
-}
-
-.footer-container {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
 }
 
 .footer-column {
@@ -102,10 +133,71 @@ body {
   height: 100px;
 }
 
+.footer-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+}
+
 img {
   width: 100%;
   height:100%;
   border-radius: 5px 5px 0px 0px;
+}
+
+#page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.secret {
+  color: white;
+}
+
+.slide {
+  display: none;
+}
+
+.slideshow {
+  position: relative;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  margin: 10px 0px 20px 0px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+}
+
+.slideshow-container-subtitle {
+  position: absolute;
+  bottom: 5px;
+  background: rgba(0, 0, 0, 0.6); /* Black background with 0.5 opacity */
+  color: #f1f1f1;
+  width: 60%;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  text-align:center;
+}
+
+.slideshow-subtitle {
+  padding: 2px 16px;
+}
+
+.slideshow-subtitle a{
+  text-decoration: none;
+  color: white;
+}
+
+.slideshow-subtitle .card{
+  background-color: rgb(54, 112, 167);
+  width: 25%;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .top-navigation {
@@ -145,100 +237,4 @@ img {
 .top-navigation-right img {
   max-height: 40px;
   max-width: 40px;
-}
-
-#comment-container {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  color: #bbb;
-}
-
-
-* {box-sizing:border-box}
-
-/* Slideshow container */
-.slideshow {
-  position: relative;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  margin: 10px 0px 20px 0px;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.slideshow-container {
-  position: relative;
-  width: 100%;
-}
-
-.slideshow-container-subtitle {
-  position: absolute;
-  bottom: 5px;
-  background: rgba(0, 0, 0, 0.6); /* Black background with 0.5 opacity */
-  color: #f1f1f1;
-  width: 60%;
-  margin-left: 20%;
-  margin-right: 20%;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  text-align:center;
-}
-
-
-.slideshow-subtitle {
-  padding: 2px 16px;
-}
-
-.slideshow-subtitle a{
-  text-decoration: none;
-  color: white;
-}
-
-.slideshow-subtitle .card{
-  background-color: rgb(54, 112, 167);
-  width: 25%;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-/* Hide the images by default */
-.slide {
-  display: none;
-}
-
-
-/* The dots/bullets/indicators */
-.dot {
-  cursor: pointer;
-  height: 15px;
-  width: 15px;
-  margin: 0px 4px;
-  background-color: #717171;
-  border-color: #bbb;
-  border-radius: 50%;
-  border-style: solid;
-  border-width: 2px;
-  display: inline-block;
-  transition: background-color 0.6s ease;
-}
-
-.active, .dot:hover {
-  background-color:  #bbb;
-}
-
-/* Fading animation */
-.fade {
-  -webkit-animation-name: fade;
-  -webkit-animation-duration: 1.5s;
-  animation-name: fade;
-  animation-duration: 1.5s;
-}
-
-@-webkit-keyframes fade {
-  from {opacity: .4}
-  to {opacity: 1}
-}
-
-@keyframes fade {
-  from {opacity: .4}
-  to {opacity: 1}
 }
