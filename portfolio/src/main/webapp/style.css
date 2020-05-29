@@ -12,6 +12,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 650px;
+  padding-bottom: 150px;
 }
 
 .secret {
@@ -62,7 +63,7 @@ body {
 }
 
 .footer {
-  position: relative;
+  position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
