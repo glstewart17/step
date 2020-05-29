@@ -12,40 +12,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let index = 0;
+let timer;
+
 /**
- * Adds a random quote to the page.
+ * Set slide index to next and call show.
  */
-
-let slideIndex;
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
+function nextSlide() {
+    index = (index + 1) % 4;
+    showSlide();
 }
 
-function showSlides(n) {
+/**
+ * Update index, clear timer, and call show.
+ */
+function currentSlide(n) {
+  index = n;
+  clearTimeout(timer);
+  showSlide();
+}
+
+/**
+ * Display correct image and comment, and reset timer.
+ */
+function showSlide() {
+
+  let i;
+  let slides = document.getElementsByClassName("slide");
+  let dots = document.getElementsByClassName("dot");
+
+  // Comments corresponding to the images.
   const comments = ['Selfie with the Nittany Lion at Penn State',
     'High School graduation photo at the podium', 
     'Convert to Code team photo',
     'PIAA runner-up in volleyball'];
 
-  // Pick a random greeting.
-  const comment = comments[n - 1];
-
-  // Add it to the page.
+  // Add comment to the div under the image.
   const commentContainer = document.getElementById('comment-container');
-  commentContainer.innerText = comment;
+  commentContainer.innerText = comments[index];
 
-  let i;
-  let slides = document.getElementsByClassName("mySlides");
-  let dots = document.getElementsByClassName("dot");
-  if (n > slides.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = slides.length}
+  // Set all slides to not display, and remove active from all dots.
   for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";  
+      slides[i].style.display = "none";
+      dots[i].className = dots[i].className.replace(" active", ""); 
   }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " active";
+
+  // Set correct dot to active and show correct slide.
+  slides[index].style.display = "block";  
+  dots[index].className += " active";
+
+  // Show next slide in 5 seconds.
+  timer = window.setTimeout(nextSlide, 5000);
 }

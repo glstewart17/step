@@ -86,10 +86,11 @@ img {
   padding: 20px 30px; 
   text-decoration: none;
   font-size: 17px;
+  font-weight: bold;
 }
 
 .top-navigation a:hover {
-  background-color: #ddd;
+  background-color: white;
   color: black;
 }
 
@@ -116,7 +117,6 @@ img {
   margin-bottom: 16px;
   color: #bbb;
 }
-
 
 
 * {box-sizing:border-box}
@@ -166,7 +166,7 @@ img {
 }
 
 /* Hide the images by default */
-.mySlides {
+.slide {
   display: none;
 }
 

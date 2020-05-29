@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="currentSlide(1)">
+  <body onload="showSlide()">
     <div class="top-navigation">
       <a class="active" href="index.html">Home</a>
       <a href="leadership.html">Leadership</a>
@@ -23,27 +23,27 @@
       </div>
     </div>
     <div id="content">
-      <h1>Gabriel's Portfolio</h1>
+      <h1>Gabriel Stewart's Portfolio</h1>
       <div class="slideshow">
         <div class="slideshow-container">
-          <div class="mySlides fade">
+          <div class="slide fade">
             <img src="images/lion.png" alt="Nittany Lion Selfie">
           </div>
-          <div class="mySlides fade">
+          <div class="slide fade">
             <img src="images/graduation.jpg" alt="Graduation Speech">
           </div>
-          <div class="mySlides fade">
+          <div class="slide fade">
             <img src="images/group.jpg" alt="Convert to Code Group">
           </div>
-          <div class="mySlides fade">
+          <div class="slide fade">
             <img src="images/volleyball.jpg" alt="Volleyball Award">
           </div>
           <div class="slideshow-container-subtitle">
-             <div id="comment-container"></div>
+            <div id="comment-container"></div>
+            <span class="dot" onclick="currentSlide(0)"></span> 
             <span class="dot" onclick="currentSlide(1)"></span> 
-            <span class="dot" onclick="currentSlide(2)"></span> 
-            <span class="dot" onclick="currentSlide(3)"></span>
-            <span class="dot" onclick="currentSlide(4)"></span> 
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span> 
           </div>
         </div>
         <div class="slideshow-subtitle">
