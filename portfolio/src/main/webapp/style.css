@@ -3,10 +3,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#page {
+  position: relative;
+  min-height: 100vh;
+}
+
 #content {
   margin-left: auto;
   margin-right: auto;
   width: 650px;
+}
+
+.secret {
+  color: white;
 }
 
 .column {
@@ -53,18 +62,43 @@ body {
 }
 
 .footer {
-  position: fixed;
+  position: relative;
   left: 0;
   bottom: 0;
   width: 100%;
   background-color: rgb(54, 112, 167);
+  text-align: center;
+  height: 150px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+
+.footer-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+}
+
+.footer-column {
+  float: left;
+  width: 15%;
+  text-align: center;
+  padding-top: 40px;
+}
+
+.footer-column a {
+  text-decoration: none;
   color: white;
+}
+
+.footer-column-logo {
+  float: left;
+  width: 40%;
   text-align: center;
 }
 
-.footer p {
-  margin-top: 20px;
-  margin-bottom: 20px;
+.footer-column-logo img{
+  height: 100px;
 }
 
 img {
