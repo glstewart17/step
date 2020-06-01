@@ -150,6 +150,11 @@ img {
   min-height: 100vh;
 }
 
+#quote-container {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
 .secret {
   color: white;
 }
