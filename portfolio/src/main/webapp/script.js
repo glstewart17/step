@@ -62,5 +62,6 @@ function showSlide() {
   dots[index].className += " active";
 
   // Show next slide in 5 seconds.
-  timer = window.setTimeout(nextSlide, 5000);
+  const TIMEOUT_MILLISECONDS = 5000;
+  timer = window.setTimeout(nextSlide, TIMEOUT_MILLISECONDS);
 }
