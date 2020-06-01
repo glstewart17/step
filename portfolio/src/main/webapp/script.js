@@ -12,17 +12,56 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let index = 0;
+let timer;
+
 /**
- * Adds a random greeting to the page.
+ * Set slide index to next and call show.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+function nextSlide() {
+    index = (index + 1) % 4;
+    showSlide();
+}
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+/**
+ * Update index, clear timer, and call show.
+ */
+function currentSlide(n) {
+  index = n;
+  clearTimeout(timer);
+  showSlide();
+}
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+/**
+ * Display correct image and comment, and reset timer.
+ */
+function showSlide() {
+
+  let i;
+  let slides = document.getElementsByClassName("slide");
+  let dots = document.getElementsByClassName("dot");
+
+  // Comments corresponding to the images.
+  const comments = ['Selfie with the Nittany Lion at Penn State',
+    'High School graduation photo at the podium', 
+    'Convert to Code team photo',
+    'PIAA runner-up in volleyball'];
+
+  // Add comment to the div under the image.
+  const commentContainer = document.getElementById('comment-container');
+  commentContainer.innerText = comments[index];
+
+  // Set all slides to not display, and remove active from all dots.
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+      dots[i].className = dots[i].className.replace(" active", ""); 
+  }
+
+  // Set correct dot to active and show correct slide.
+  slides[index].style.display = "block";  
+  dots[index].className += " active";
+
+  // Show next slide in 5 seconds.
+  const TIMEOUT_MILLISECONDS = 5000;
+  timer = window.setTimeout(nextSlide, TIMEOUT_MILLISECONDS);
 }

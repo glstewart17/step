@@ -6,13 +6,113 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+  <body onload="showSlide()">
+    <div id="page">
+      <div class="top-navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="projects.html">Projects</a>
+        <a href="blogging.html">Blogging</a>
+        <a href="about.html">About</a>
+        <div class="top-navigation-right">
+          <a href="https://www.linkedin.com/in/gabriel-stewart-311206171">
+            <img src="images/linkedin-logo.png" alt="Linkedin Account">
+          </a>
+          <a href="https://github.com/glstewart17">
+            <img src="images/github-logo.png" alt="Github Account">
+          </a>
+        </div>
+      </div>
+      <div id="content">
+        <h1>Gabriel Stewart's Portfolio</h1>
+        <div class="slideshow">
+          <div class="slideshow-container">
+            <div class="slide fade">
+              <img src="images/lion.png" alt="Nittany Lion Selfie">
+            </div>
+            <div class="slide fade">
+              <img src="images/graduation.jpg" alt="Graduation Speech">
+            </div>
+            <div class="slide fade">
+              <img src="images/group.jpg" alt="Convert to Code Group">
+            </div>
+            <div class="slide fade">
+              <img src="images/volleyball.jpg" alt="Volleyball Award">
+            </div>
+            <div class="slideshow-container-subtitle">
+              <div id="comment-container"></div>
+              <span class="dot" onclick="currentSlide(0)"></span> 
+              <span class="dot" onclick="currentSlide(1)"></span> 
+              <span class="dot" onclick="currentSlide(2)"></span>
+              <span class="dot" onclick="currentSlide(3)"></span> 
+            </div>
+          </div>
+          <div class="slideshow-subtitle">
+            <p>Hi, my name is Gabriel and I am a rising junior at Penn State and a STEP intern at Google. 
+              Feel free to look at my work and learn more about me.
+            <div class="card">
+              <a href="about.html">
+                <div class="card-container">
+                  <h4><b>About Me</b></h4> 
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <h2>My Work</h2>
+        <div class="column-small">
+          <a href="leadership.html">
+            <div class="card">
+              <div class="card-container">
+                <h4><b>Leadership</b></h4> 
+                <p>Learn about my leadership experiences
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="column-small">
+          <a href="projects.html">
+            <div class="card">
+              <div class="card-container">
+                <h4><b>Projects</b></h4> 
+                <p>See some projects I've completed
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="column-small">
+          <a href="blogging.html">
+            <div class="card">
+              <div class="card-container">
+                <h4><b>Blogging</b></h4> 
+                <p>Read some of the blogs I've written
+              </div>
+            </div>
+          </a>
+        </div>
+        <p class="secret">I do not like making portfolios.
+      </div>
+      <div class="footer">
+        <div class="footer-container">
+          <div class="footer-column">
+            <a href="leadership.html">Leadership</a>
+          </div>
+          <div class="footer-column">
+            <a href="projects.html">Projects</a>
+          </div>
+          <div class="footer-column-logo">
+            <a href="index.html">
+              <img src="images/logo-white.svg" alt="Logo">
+            </a>
+          </div>
+          <div class="footer-column">
+            <a href="blogging.html">Blogging</a>
+          </div>
+          <div class="footer-column">
+            <a href="about.html">About</a>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
