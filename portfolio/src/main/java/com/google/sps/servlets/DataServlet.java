@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.QuotePerson;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,25 +28,38 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<String> quotes;
+  private List<QuotePerson> quotes;
 
   @Override
   public void init() {
     quotes = new ArrayList<>();
-    quotes.add("Bears. Beets. Battlestar Galactica.");
-    quotes.add("I'm not supersitious, but I am a little stitious.");
-    quotes.add("The worst thing about prison was the dementors.");
-    quotes.add("I talk a lot. so I've learned to tune myself out.");
-    quotes.add(
+    quotes.add(new QuotePerson("Bears. Beets. Battlestar Galactica.", "Jim Halpert"));
+    quotes.add(new QuotePerson("I'm not supersitious, but I am a little stitious.", "Michael Scott"));
+    quotes.add(new QuotePerson("The worst thing about prison was the dementors.", "Michael Scott"));
+    quotes.add(new QuotePerson("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor"));
+    quotes.add(new QuotePerson(
         "Sometimes I'll start a sentence and I don't even know where it's going. "
-            + "I just hope I find it along the way.");
+            + "I just hope I find it along the way.", "Michael Scott"));
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String quote = quotes.get((int) (Math.random() * quotes.size()));
+    QuotePerson quote = quotes.get((int) (Math.random() * quotes.size()));
 
-    response.setContentType("text/html;");
-    response.getWriter().println(quote);
+    String json = convertToJsonUsingGson(quote);
+
+    // Send the JSON as the response
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  }
+
+    /**
+   * Converts a ServerStats instance into a JSON string using the Gson library. Note: Gson library 
+   * dependency added to pom.xml.
+   */
+  private String convertToJsonUsingGson(QuotePerson quote) {
+    Gson gson = new Gson();
+    String json = gson.toJson(quote);
+    return json;
   }
 }
