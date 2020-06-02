@@ -19,10 +19,12 @@ public final class QuotePerson {
 
   private final String quote;
   private final String person;
+  private final long timestamp;
 
-  public QuotePerson(String quote, String person) {
+  public QuotePerson(String quote, String person, long timestamp) {
     this.quote = quote;
     this.person = person;
+    this.timestamp = timestamp;
   }
 
   public String getQuote() {

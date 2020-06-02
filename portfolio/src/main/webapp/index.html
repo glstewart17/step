@@ -64,10 +64,11 @@
             <h4><b>Random Quote from the Office</b></h4> 
             <div id="quote-container">Quote coming soon.</div>
             <form action="/data" method="POST">
-              <p>Want a new quote? Submit blank for random, or pick a number between 1 and 6.</p>
-              <input type="number" name="quote-number" min="1" max="3" value="1">
-              <input type="submit" />
+              <input type="text" name="comment-content" />
               <br/>
+              <input type="text" name="comment-author" />
+              <br/>
+              <button>Submit</button>
             </form>
           </div>
         </div>
