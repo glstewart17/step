@@ -30,6 +30,9 @@ public class DataServlet extends HttpServlet {
 
   private List<QuotePerson> quotes;
 
+  /**
+   * Add all the quotes to quotes using type QuotePerosn on start.
+   */
   @Override
   public void init() {
     quotes = new ArrayList<>();
@@ -42,18 +45,20 @@ public class DataServlet extends HttpServlet {
             + "I just hope I find it along the way.", "Michael Scott"));
   }
 
+  /**
+   * For a get request, return a JSON version of a quote and person.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     QuotePerson quote = quotes.get((int) (Math.random() * quotes.size()));
 
     String json = convertToJsonUsingGson(quote);
 
-    // Send the JSON as the response
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
 
-    /**
+  /**
    * Converts a ServerStats instance into a JSON string using the Gson library. Note: Gson library 
    * dependency added to pom.xml.
    */

@@ -74,6 +74,8 @@ function getOfficeQuote() {
     
     // data is json of QuotePerson, so reference its attributes
     const quoteContainer = document.getElementById('quote-container');
-    quoteContainer.innerText = data.quote + "  -  " + data.person;
+    quoteContainer.innerText = "\"" + data.quote + "\" - " + data.person;
+  }).catch((error) => {
+    console.log(error)
   });
 }
