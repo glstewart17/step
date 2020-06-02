@@ -40,6 +40,7 @@ public class DataServlet extends HttpServlet {
     quotes.add(new QuotePerson("I'm not supersitious, but I am a little stitious.", "Michael Scott"));
     quotes.add(new QuotePerson("The worst thing about prison was the dementors.", "Michael Scott"));
     quotes.add(new QuotePerson("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor"));
+    quotes.add(new QuotePerson("You couldn’t handle my undivided attention.", "Dwight Schrute"));
     quotes.add(new QuotePerson(
         "Sometimes I'll start a sentence and I don't even know where it's going. "
             + "I just hope I find it along the way.", "Michael Scott"));
