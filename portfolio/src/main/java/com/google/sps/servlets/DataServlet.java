@@ -29,9 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private List<QuotePerson> quotes;
+  private int index = -1;
 
   /**
-   * Add all the quotes to quotes using type QuotePerosn on start.
+   * Add all the quotes to quotes using type QuotePerson on start.
    */
   @Override
   public void init() {
@@ -51,12 +52,48 @@ public class DataServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    QuotePerson quote = quotes.get((int) (Math.random() * quotes.size()));
+    
+    QuotePerson quote;
+
+    if (index == -1) {
+      quote = quotes.get((int) (Math.random() * quotes.size()));
+    }
+    else {
+      quote = quotes.get(index);
+    }
 
     String json = convertToJsonUsingGson(quote);
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  /**
+   * For a post request, change the index that determines which quote is returned during get request.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    try {
+
+      // Try and convert input quote-number to integer.
+      int quoteNumber = Integer.parseInt(request.getParameter("quote-number"));
+          
+      // If valid quote number, set index as quote number, otherwise, set index to -1.
+      if (quoteNumber <= 0 || quoteNumber > quotes.size()) {
+        System.err.println("Index out of range, default to random.");
+        index = -1;
+      }
+      else {
+        index = quoteNumber - 1;
+      }
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert quote-number input to a string.");
+      index = -1;
+    }
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
   }
 
   /**
