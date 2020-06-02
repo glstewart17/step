@@ -67,13 +67,13 @@ function showSlide() {
 }
 
 /**
- * Fetches a random quote from the Office from the server and adds it to the DOM.
+ * Fetches a quote from the Office from the server and adds it to the DOM.
  */
 function getOfficeQuote() {
   console.log('Fetching a quote from the Office.');
 
   // The fetch() function returns a Promise because the request is asynchronous.
-  const responsePromise = fetch('/random-office-quote');
+  const responsePromise = fetch('/data');
 
   // When the request is complete, pass the response into handleResponse().
   responsePromise.then(handleResponse);
