@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-/** Class containing the author, content, and timestamp of a content. */
+/** Class containing the author, content, and timestamp of a comment. */
 public final class Comment {
 
   private final String content;
