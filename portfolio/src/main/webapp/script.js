@@ -86,13 +86,12 @@ function getComments() {
  */ 
 function createCommentElement(comment) {
   const commentElement = document.createElement('li');
-  commentElement.className = 'comment';
 
-  const contentElement = document.createElement('span');
+  const contentElement = document.createElement('p');
   contentElement.innerText = comment.content;
 
-  const authorElement = document.createElement('span');
-  authorElement.innerText = comment.author;
+  const authorElement = document.createElement('p');
+  authorElement.innerText = "- " + comment.author;
 
   commentElement.appendChild(contentElement);
   commentElement.appendChild(authorElement);
