@@ -218,6 +218,7 @@ img {
 input[type=text], textarea {
   width: 100%;
   margin-top: 16px;
+  font-family:Arial, Helvetica, sans-serif;
   padding: 10px;
   border: 1px solid #bbb;
   border-radius: 5px;
