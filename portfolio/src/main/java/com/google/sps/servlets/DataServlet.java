@@ -34,35 +34,18 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<Comment> quotes;
-
   /**
-   * Add all the quotes to quotes using type QuotePerson on start.
-   */
-  @Override
-  public void init() {
-    quotes = new ArrayList<>();
-    quotes.add(new Comment("Bears. Beets. Battlestar Galactica.", "Jim Halpert",1));
-    quotes.add(new Comment("I'm not supersitious, but I am a little stitious.", "Michael Scott",1));
-    quotes.add(new Comment("The worst thing about prison was the dementors.", "Michael Scott",1));
-    quotes.add(new Comment("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor",1));
-    quotes.add(new Comment("You couldn’t handle my undivided attention.", "Dwight Schrute",1));
-    quotes.add(new Comment(
-        "Sometimes I'll start a sentence and I don't even know where it's going. "
-            + "I just hope I find it along the way.", "Michael Scott",1));
-  }
-
-  /**
-   * For a get request, return a JSON version of a comment and it's author.
+   * For a get request, return a JSON version of all the comments.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
+    // Prepare query and get all comments in Datastore.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    // Create a list of comments based on results.
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       Comment comment = new Comment(
@@ -72,16 +55,14 @@ public class DataServlet extends HttpServlet {
       comments.add(comment);
     }
 
-    Comment quote = comments.get((int) (Math.random() * comments.size()));
-
-    String json = convertToJsonUsingGson(quote);
-
+    // Converts comments into a JSON string using the Gson library.
+    Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(comments));
   }
 
   /**
-   * For a post request, change the index that determines which quote is returned during get request.
+   * For a post request, get all attributes, create an entity, fill the attributes, and store entity.
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -90,25 +71,15 @@ public class DataServlet extends HttpServlet {
     String author = request.getParameter("comment-author");
     long timestamp = System.currentTimeMillis();
 
-    Entity taskEntity = new Entity("Comment");
-    taskEntity.setProperty("timestamp", timestamp);
-    taskEntity.setProperty("content", content);
-    taskEntity.setProperty("author", author);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("content", content);
+    commentEntity.setProperty("author", author);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+    datastore.put(commentEntity);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: Gson library 
-   * dependency added to pom.xml.
-   */
-  private String convertToJsonUsingGson(Comment comment) {
-    Gson gson = new Gson();
-    String json = gson.toJson(comment);
-    return json;
   }
 }

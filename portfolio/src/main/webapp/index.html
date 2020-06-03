@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="showSlide(); getOfficeQuote();">
+  <body onload="showSlide(); getComments();">
     <div id="page">
       <div class="top-navigation">
         <a class="active" href="index.html">Home</a>
@@ -59,19 +59,6 @@
             </div>
           </div>
         </div>
-        <div class="slideshow">
-          <div class="slideshow-subtitle">
-            <h4><b>Random Quote from the Office</b></h4> 
-            <div id="quote-container">Quote coming soon.</div>
-            <form action="/data" method="POST">
-              <input type="text" name="comment-content" />
-              <br/>
-              <input type="text" name="comment-author" />
-              <br/>
-              <button>Submit</button>
-            </form>
-          </div>
-        </div>
         <h2>My Work</h2>
         <div class="column-small">
           <a href="leadership.html">
@@ -102,6 +89,20 @@
               </div>
             </div>
           </a>
+        </div>
+        <h2>Comments</h2>
+        <div class="slideshow">
+          <div class="slideshow-subtitle">
+            <h4><b>Comments</b></h4> 
+            <ul id="comment-list"></ul>
+            <form action="/data" method="POST">
+              <input type="text" name="comment-content" />
+              <br/><br/>
+              <input type="text" name="comment-author" />
+              <br/><br/>
+              <button>Submit</button>
+            </form>
+          </div>
         </div>
         <p class="secret">I do not like making portfolios.
       </div>

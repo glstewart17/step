@@ -36,7 +36,6 @@ function currentSlide(n) {
  * Display correct image and comment, and reset timer.
  */
 function showSlide() {
-
   let i;
   let slides = document.getElementsByClassName("slide");
   let dots = document.getElementsByClassName("dot");
@@ -53,8 +52,8 @@ function showSlide() {
 
   // Set all slides to not display, and remove active from all dots.
   for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-      dots[i].className = dots[i].className.replace(" active", ""); 
+    slides[i].style.display = "none";
+    dots[i].className = dots[i].className.replace(" active", ""); 
   }
 
   // Set correct dot to active and show correct slide.
@@ -67,15 +66,35 @@ function showSlide() {
 }
 
 /**
- * Fetches a quote from the Office from the server and adds it to the DOM.
+ * Fetches all the comments from the server and add them to comment-list.
  */
-function getOfficeQuote() {
-  fetch('/data').then(response => response.json()).then((data) => {
+function getComments() {
+  fetch('/data').then(response => response.json()).then((comments) => {
     
-    // data is json of Comment, so reference its attributes
-    const quoteContainer = document.getElementById('quote-container');
-    quoteContainer.innerText = "\"" + data.content + "\" - " + data.author;
+    // comments is json of many Comment elements, so iterate over it.
+    const commentList = document.getElementById('comment-list');
+    comments.forEach((comment) => {
+      commentList.appendChild(createCommentElement(comment));
+    })
   }).catch((error) => {
     console.log(error)
   });
+}
+
+/**
+ * Creates a list element that represents each comment.
+ */ 
+function createCommentElement(comment) {
+  const commentElement = document.createElement('li');
+  commentElement.className = 'comment';
+
+  const contentElement = document.createElement('span');
+  contentElement.innerText = comment.content;
+
+  const authorElement = document.createElement('span');
+  authorElement.innerText = comment.author;
+
+  commentElement.appendChild(contentElement);
+  commentElement.appendChild(authorElement);
+  return commentElement;
 }
