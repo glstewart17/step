@@ -14,24 +14,28 @@
 
 package com.google.sps.data;
 
-/** Class containing quotes and the person who said it. */
-public final class QuotePerson {
+/** Class containing the author, content, and timestamp of a content. */
+public final class Comment {
 
-  private final String quote;
-  private final String person;
+  private final String content;
+  private final String author;
   private final long timestamp;
 
-  public QuotePerson(String quote, String person, long timestamp) {
-    this.quote = quote;
-    this.person = person;
+  public Comment(String content, String author, long timestamp) {
+    this.content = content;
+    this.author = author;
     this.timestamp = timestamp;
   }
 
-  public String getQuote() {
-    return quote;
+  public String getContent() {
+    return content;
   }
 
-  public String getPerson() {
-    return person;
+  public String getAuthor() {
+    return author;
+  }
+
+  public long getTimestamp() {
+      return timestamp;
   }
 }

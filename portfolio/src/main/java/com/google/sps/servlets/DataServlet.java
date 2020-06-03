@@ -20,7 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.sps.data.QuotePerson;
+import com.google.sps.data.Comment;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<QuotePerson> quotes;
+  private List<Comment> quotes;
 
   /**
    * Add all the quotes to quotes using type QuotePerson on start.
@@ -42,37 +42,37 @@ public class DataServlet extends HttpServlet {
   @Override
   public void init() {
     quotes = new ArrayList<>();
-    quotes.add(new QuotePerson("Bears. Beets. Battlestar Galactica.", "Jim Halpert",1));
-    quotes.add(new QuotePerson("I'm not supersitious, but I am a little stitious.", "Michael Scott",1));
-    quotes.add(new QuotePerson("The worst thing about prison was the dementors.", "Michael Scott",1));
-    quotes.add(new QuotePerson("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor",1));
-    quotes.add(new QuotePerson("You couldn’t handle my undivided attention.", "Dwight Schrute",1));
-    quotes.add(new QuotePerson(
+    quotes.add(new Comment("Bears. Beets. Battlestar Galactica.", "Jim Halpert",1));
+    quotes.add(new Comment("I'm not supersitious, but I am a little stitious.", "Michael Scott",1));
+    quotes.add(new Comment("The worst thing about prison was the dementors.", "Michael Scott",1));
+    quotes.add(new Comment("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor",1));
+    quotes.add(new Comment("You couldn’t handle my undivided attention.", "Dwight Schrute",1));
+    quotes.add(new Comment(
         "Sometimes I'll start a sentence and I don't even know where it's going. "
             + "I just hope I find it along the way.", "Michael Scott",1));
   }
 
   /**
-   * For a get request, return a JSON version of a quote and person.
+   * For a get request, return a JSON version of a comment and it's author.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    Query query = new Query("QuotePerson").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    List<QuotePerson> comments = new ArrayList<>();
+    List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      QuotePerson comment = new QuotePerson(
-        (String) entity.getProperty("quote"), 
-        (String) entity.getProperty("person"), 
+      Comment comment = new Comment(
+        (String) entity.getProperty("content"), 
+        (String) entity.getProperty("author"), 
         (long) entity.getProperty("timestamp"));
       comments.add(comment);
     }
 
-    QuotePerson quote = comments.get((int) (Math.random() * comments.size()));
+    Comment quote = comments.get((int) (Math.random() * comments.size()));
 
     String json = convertToJsonUsingGson(quote);
 
@@ -86,14 +86,14 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    String comment = request.getParameter("comment-content");
+    String content = request.getParameter("comment-content");
     String author = request.getParameter("comment-author");
     long timestamp = System.currentTimeMillis();
 
-    Entity taskEntity = new Entity("QuotePerson");
+    Entity taskEntity = new Entity("Comment");
     taskEntity.setProperty("timestamp", timestamp);
-    taskEntity.setProperty("quote", comment);
-    taskEntity.setProperty("person", author);
+    taskEntity.setProperty("content", content);
+    taskEntity.setProperty("author", author);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
@@ -106,9 +106,9 @@ public class DataServlet extends HttpServlet {
    * Converts a ServerStats instance into a JSON string using the Gson library. Note: Gson library 
    * dependency added to pom.xml.
    */
-  private String convertToJsonUsingGson(QuotePerson quote) {
+  private String convertToJsonUsingGson(Comment comment) {
     Gson gson = new Gson();
-    String json = gson.toJson(quote);
+    String json = gson.toJson(comment);
     return json;
   }
 }

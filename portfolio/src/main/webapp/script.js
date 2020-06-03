@@ -72,9 +72,9 @@ function showSlide() {
 function getOfficeQuote() {
   fetch('/data').then(response => response.json()).then((data) => {
     
-    // data is json of QuotePerson, so reference its attributes
+    // data is json of Comment, so reference its attributes
     const quoteContainer = document.getElementById('quote-container');
-    quoteContainer.innerText = "\"" + data.quote + "\" - " + data.person;
+    quoteContainer.innerText = "\"" + data.content + "\" - " + data.author;
   }).catch((error) => {
     console.log(error)
   });
