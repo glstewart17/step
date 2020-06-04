@@ -80,7 +80,7 @@ function getComments() {
 
   $.get("/data", { count: commentCount }, function (data, textStatus, jqXHR) {
     
-    // Empty the list that will recieve the comments.
+    // Empty the list that will receive the comments.
     const commentList = document.getElementById('comment-list');
     commentList.innerHTML="";
 
@@ -99,17 +99,49 @@ function getComments() {
 function createCommentElement(comment) {
   const commentElement = document.createElement('li');
 
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const column80 = document.createElement("div");
+  column80.className = "column-80";
+
+  const column20 = document.createElement("div");
+  column20.className = "column-20";
+
+  // Remove the comment and call to delete when th button is pressed.
+  const deleteButton = document.createElement('button');
+  deleteButton.className = "delete"
+  deleteButton.innerText = "Delete";
+  deleteButton.addEventListener("click", () => {
+    deleteComment(comment);
+    commentElement.remove();
+  });
+
   const contentElement = document.createElement('p');
   contentElement.innerText = comment.content;
 
   const authorElement = document.createElement('p');
   authorElement.innerText = "- " + comment.author;
 
-  commentElement.appendChild(contentElement);
-  commentElement.appendChild(authorElement);
+  column20.append(deleteButton);
+  column80.appendChild(contentElement);
+  column80.appendChild(authorElement);
+  row.appendChild(column80);
+  row.appendChild(column20);
+  commentElement.appendChild(row);
   return commentElement;
 }
 
+/**
+ * Delete a comment with a specific id from the comment model.
+ */
+function deleteComment(comment) {
+  $.post("/delete-id-data", { id: comment.id } );
+}
+
+/**
+ * Add a comment using the author and content field.
+ */
 function addComment() {
   let author = $("#comment-author").val();
   let content = $("#comment-content").val();
@@ -123,11 +155,17 @@ function addComment() {
   getComments();
 };
 
+/**
+ * Delete all the comments and call getComments.
+ */
 function deleteAll(){
   $.post("/delete-data");
   getComments();
 }
 
+/**
+ * Call the corresponding function when the button is clicked.
+ */
 $(document).ready(function(){
   $('#add-comment').click(function() {
     addComment();
