@@ -94,18 +94,18 @@
             <ul id="comment-list"></ul>
             <form action="/data" method="POST">
               <div class="row">
-                <div class="column-label">
+                <div class="column-20">
                   <label for="comment-content">Comment</label>
                 </div>
-                <div class="column-field">
+                <div class="column-80">
                   <textarea type="text" name="comment-content" placeholder="Your comment..."></textarea>
                 </div>
               </div>
               <div class="row">
-                <div class="column-label">
+                <div class="column-20">
                   <label for="comment-author">Author</label>
                 </div>
-                <div class="column-field">
+                <div class="column-80">
                   <input type="text" name="comment-author" placeholder="Your name..."/>
                 </div>
               </div>
@@ -113,11 +113,19 @@
                 <button>Submit</button>
               </div>
             </form>
-            <form action="/data" method="GET">
-              <div class="row">
-                <button>Submit</button>
+            <div class="count-form">
+              <div class="row">                
+                <div class="column-80">
+                  <label for="comment-author">Select the number of comments, 30 is the max</label>
+                </div>
+                <div class="column-20">
+                  <input type="number" id="comment-count" min="1" max="30" value="5"/>
+                </div>
               </div>
-            </form>
+              <div class="row">
+                <button onclick="getComments()">Submit</button>
+              </div>
+            </div>
             <form action="/delete-data" class="form-last" method="POST">
               <div class="row">
                 <button class="delete">Delete All Comments</button>

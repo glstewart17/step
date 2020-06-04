@@ -69,10 +69,24 @@ function showSlide() {
  * Fetches all the comments from the server and add them to comment-list.
  */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((comments) => {
+
+  const DEFAULT_COMMENT_COUNT = '5';
+  let commentCount = document.getElementById('comment-count').value;
+
+  // If comment count is an empty string, set to default.
+  if (commentCount === "") {
+    commentCount = DEFAULT_COMMENT_COUNT;
+  }
+
+  const url = '/data?count=' + commentCount;
+  console.log(url)
+  fetch(url).then(response => response.json()).then((comments) => {
     
-    // comments is json of many Comment elements, so iterate over it.
+    // Empty the list that will recieve the comments.
     const commentList = document.getElementById('comment-list');
+    commentList.innerHTML="";
+
+    // For each comment, create and append a list element.
     comments.forEach((comment) => {
       commentList.appendChild(createCommentElement(comment));
     })

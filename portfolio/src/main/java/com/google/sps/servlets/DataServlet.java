@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions.Builder;
 import com.google.sps.data.Comment;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -40,14 +41,17 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
+    // Get the count from the request.
+    int commentCount = getCommentCount(request);
+
     // Prepare query and get all comments in Datastore.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    // Create a list of comments based on results.
+    // Create a list of comments based on results, with a limited number of comments.
     List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable(Builder.withLimit(commentCount))) {
       Comment comment = new Comment(
         (String) entity.getProperty("content"), 
         (String) entity.getProperty("author"), 
@@ -81,5 +85,25 @@ public class DataServlet extends HttpServlet {
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
+  }
+
+  /**
+   * Get the number of comments from the request.
+   */
+  private int getCommentCount(HttpServletRequest request) {
+
+    // Convert the string version of the count to a float and define max.
+    Float commentCount = Float.parseFloat(request.getParameter("count"));
+    final int MAX_COMMENT_COUNT = 30;
+
+    if (commentCount < 0) {
+      return (int) 0;
+    }
+
+    if(commentCount > MAX_COMMENT_COUNT){
+      return (int) MAX_COMMENT_COUNT;
+    }
+
+    return (int) Math.round(commentCount);
   }
 }

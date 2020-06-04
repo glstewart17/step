@@ -49,25 +49,19 @@ button:hover {
   padding: 15px 0px;
 }
 
-.column a{
-  text-decoration: none;
-  color: black;
-}
-
-.column-label {
+.column-20 {
   float: left;
   width: 20%;
 }
 
-.column-field {
+.column-80 {
   float: left;
   width: 80%;
 }
 
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
+.column a{
+  text-decoration: none;
+  color: black;
 }
 
 .column-small {
@@ -191,7 +185,7 @@ button:hover {
   width: 650px;
 }
 
-form {
+form, .count-form {
   border-bottom:1px solid #bbb;
 }
 
@@ -215,7 +209,7 @@ img {
   border-radius: 5px 5px 0px 0px;
 }
 
-input[type=text], textarea {
+input[type=text], input[type=number], textarea {
   width: 100%;
   margin-top: 16px;
   font-family:Arial, Helvetica, sans-serif;
@@ -242,6 +236,12 @@ label {
 #quote-container {
   margin-top: 16px;
   margin-bottom: 16px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .secret {
