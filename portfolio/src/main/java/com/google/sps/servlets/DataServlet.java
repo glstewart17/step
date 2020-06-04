@@ -53,6 +53,7 @@ public class DataServlet extends HttpServlet {
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable(Builder.withLimit(commentCount))) {
       Comment comment = new Comment(
+        (long) entity.getKey().getId(),  
         (String) entity.getProperty("content"), 
         (String) entity.getProperty("author"), 
         (long) entity.getProperty("timestamp"));
