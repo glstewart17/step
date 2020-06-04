@@ -71,23 +71,21 @@ function showSlide() {
 function getComments() {
 
   const DEFAULT_COMMENT_COUNT = '5';
-  let commentCount = document.getElementById('comment-count').value;
+  let commentCount = $("#comment-count").val();
 
   // If comment count is an empty string, set to default.
   if (commentCount === "") {
     commentCount = DEFAULT_COMMENT_COUNT;
   }
 
-  const url = '/data?count=' + commentCount;
-  console.log(url)
-  fetch(url).then(response => response.json()).then((comments) => {
+  $.get("/data", { count: commentCount }, function (data, textStatus, jqXHR) {
     
     // Empty the list that will recieve the comments.
     const commentList = document.getElementById('comment-list');
     commentList.innerHTML="";
 
     // For each comment, create and append a list element.
-    comments.forEach((comment) => {
+    data.forEach((comment) => {
       commentList.appendChild(createCommentElement(comment));
     })
   }).catch((error) => {
@@ -111,3 +109,33 @@ function createCommentElement(comment) {
   commentElement.appendChild(authorElement);
   return commentElement;
 }
+
+function addComment() {
+  let author = $("#comment-author").val();
+  let content = $("#comment-content").val();
+
+  if (author === "" || content === "") {
+    alert("All fields must be filled before submission.");
+    return;
+  }
+
+  $.post("/data", { author: author, content: content } );
+  getComments();
+};
+
+function deleteAll(){
+  $.post("/delete-data");
+  getComments();
+}
+
+$(document).ready(function(){
+  $('#add-comment').click(function() {
+    addComment();
+  });
+  $('#delete-all').click(function() {
+    deleteAll();
+  });
+    $('#limit-comments').click(function() {
+    getComments();
+  });
+});
