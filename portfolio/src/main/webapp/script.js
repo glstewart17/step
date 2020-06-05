@@ -63,16 +63,8 @@ function showSlide() {
  */
 function getComments() {
 
-  const DEFAULT_COMMENT_COUNT = '5';
-  let commentCount = $("#comment-count").val();
-
-  // If comment count is an empty string, set to default.
-  if (commentCount === "") {
-    commentCount = DEFAULT_COMMENT_COUNT;
-  }
-
   // Make get request to get commentCount number of comments.
-  $.get("/data", { count: commentCount }, function (data, textStatus, jqXHR) {
+  $.get("/data", { count: $("#comment-count").val(), page: $("#page-number").val() }, function (data, textStatus, jqXHR) {
     
     // Empty the list that will receive the comments.
     const commentList = document.getElementById('comment-list');

@@ -117,10 +117,28 @@
             <div class="count-form">
               <div class="row">                
                 <div class="column-80">
-                  <label for="comment-author">Select the number of comments, 30 is the max</label>
+                  <label for="comment-count">Select the number of comments per page</label>
                 </div>
                 <div class="column-20">
-                  <input type="number" id="comment-count" min="1" max="30" value="5"/>
+                  <select id="comment-count" name="comment-count">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row"> 
+                <div class="column-80">
+                  <label for="comment-count">Select the page number</label>
+                </div>
+                <div class="column-20">
+                  <select id="page-number" name="page-number">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
                 </div>
               </div>
               <div class="row">
