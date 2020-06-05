@@ -150,6 +150,11 @@ function deleteAll() {
   getComments();
 }
 
+function countChange() {
+  $('#page-number').val(1);
+  getComments();
+}
+
 /**
  * Call the corresponding function when the button is clicked.
  */
@@ -160,7 +165,13 @@ $(document).ready(function() {
   $('#delete-all').click(function() {
     deleteAll();
   });
-    $('#limit-comments').click(function() {
+  $('#limit-comments').click(function() {
+    getComments();
+  });
+  $("#comment-count").change(function(){
+    countChange();
+  });
+  $("#page-number").change(function(){
     getComments();
   });
 });
