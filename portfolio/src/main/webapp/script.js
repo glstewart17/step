@@ -16,14 +16,6 @@ let index = 0;
 let timer;
 
 /**
- * Set slide index to next and call show.
- */
-function nextSlide() {
-    index = (index + 1) % 4;
-    showSlide();
-}
-
-/**
  * Update index, clear timer, and call show.
  */
 function currentSlide(n) {
@@ -33,7 +25,7 @@ function currentSlide(n) {
 }
 
 /**
- * Display correct image and comment, and reset timer.
+ * Display the correct image and comment, and reset timer.
  */
 function showSlide() {
   let i;
@@ -62,7 +54,8 @@ function showSlide() {
 
   // Show next slide in 5 seconds.
   const TIMEOUT_MILLISECONDS = 5000;
-  timer = window.setTimeout(nextSlide, TIMEOUT_MILLISECONDS);
+  index = (index + 1) % slides.length;
+  timer = window.setTimeout(showSlide, TIMEOUT_MILLISECONDS);      
 }
 
 /**
@@ -78,6 +71,7 @@ function getComments() {
     commentCount = DEFAULT_COMMENT_COUNT;
   }
 
+  // Make get request to get commentCount number of comments.
   $.get("/data", { count: commentCount }, function (data, textStatus, jqXHR) {
     
     // Empty the list that will receive the comments.
@@ -108,7 +102,7 @@ function createCommentElement(comment) {
   const column20 = document.createElement("div");
   column20.className = "column-20";
 
-  // Remove the comment and call to delete when th button is pressed.
+  // Remove the comment and call to delete when the button is pressed.
   const deleteButton = document.createElement('button');
   deleteButton.className = "delete"
   deleteButton.innerText = "Delete";
@@ -151,6 +145,7 @@ function addComment() {
     return;
   }
 
+  // Make post request to submit new comment and getComments after.
   $.post("/data", { author: author, content: content } );
   getComments();
 };
@@ -158,7 +153,7 @@ function addComment() {
 /**
  * Delete all the comments and call getComments.
  */
-function deleteAll(){
+function deleteAll() {
   $.post("/delete-data");
   getComments();
 }
@@ -166,7 +161,7 @@ function deleteAll(){
 /**
  * Call the corresponding function when the button is clicked.
  */
-$(document).ready(function(){
+$(document).ready(function() {
   $('#add-comment').click(function() {
     addComment();
   });
