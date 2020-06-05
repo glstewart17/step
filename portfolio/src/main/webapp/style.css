@@ -185,7 +185,7 @@ button:hover {
   width: 650px;
 }
 
-form, .count-form {
+.count-form {
   border-bottom:1px solid #bbb;
 }
 

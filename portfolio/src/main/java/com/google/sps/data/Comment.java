@@ -17,11 +17,13 @@ package com.google.sps.data;
 /** Class containing the author, content, and timestamp of a comment. */
 public final class Comment {
 
+  private final long id;
   private final String content;
   private final String author;
   private final long timestamp;
 
-  public Comment(String content, String author, long timestamp) {
+  public Comment(long id, String content, String author, long timestamp) {
+    this.id = id;
     this.content = content;
     this.author = author;
     this.timestamp = timestamp;
@@ -33,6 +35,10 @@ public final class Comment {
 
   public String getAuthor() {
     return author;
+  }
+
+  public long getId() {
+      return id;
   }
 
   public long getTimestamp() {
