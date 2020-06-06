@@ -118,11 +118,10 @@ function createCommentElement(comment) {
   deleteButton.addEventListener("click", () => {
     
     // If only one element, go down one page.
-    if ($("#comment-list").length == 1){
+    if ($("#comment-list").children().length == 1 && $('#page-number').val() != 1 ){
       $('#page-number').val($('#page-number').val() - 1);
     }
-    deleteComment(comment);
-    getComments();
+    deleteComments(comment.id);
   });
 
   const contentElement = document.createElement('p');
@@ -139,13 +138,6 @@ function createCommentElement(comment) {
   row.appendChild(column20);
   commentElement.appendChild(row);
   return commentElement;
-}
-
-/**
- * Delete a comment with a specific id from the comment model.
- */
-function deleteComment(comment) {
-  $.post("/delete-id-data", { id: comment.id } );
 }
 
 /**
@@ -166,7 +158,7 @@ function addComment() {
 };
 
 /**
- * Delete all the comments and call getComments.
+ * Delete comment based on id or all comments, then call getComments.
  */
 function deleteComments(commentId) {
   $.post("/delete-data", { id: commentId }, function (data, textStatus, jqXHR) {
@@ -191,7 +183,7 @@ $(document).ready(function() {
   });
   $('#delete-all').click(function() {
     $("#page-number").val(1);
-    deleteComments(null);
+    deleteComments(1);
   });
   $('#limit-comments').click(function() {
     getComments();
