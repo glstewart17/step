@@ -20,8 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.FetchOptions.Builder;
 import com.google.sps.data.Comment;
+import com.google.sps.data.CommentResult;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,8 +41,9 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    // Get the count from the request.
-    int commentCount = getCommentCount(request);
+    // Get the count per page and page number from the request.
+    int commentCount = Integer.parseInt(request.getParameter("count"));
+    int pageNumber = Integer.parseInt(request.getParameter("page"));
 
     // Prepare query and get all comments in Datastore.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
@@ -51,7 +52,7 @@ public class DataServlet extends HttpServlet {
 
     // Create a list of comments based on results, with a limited number of comments.
     List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable(Builder.withLimit(commentCount))) {
+    for (Entity entity : results.asIterable()) {
       Comment comment = new Comment(
         (long) entity.getKey().getId(),  
         (String) entity.getProperty("content"), 
@@ -60,10 +61,17 @@ public class DataServlet extends HttpServlet {
       comments.add(comment);
     }
 
+    List<Comment> output = new ArrayList<>();
+    if (pageNumber * commentCount > comments.size() ) {
+        output = comments.subList((pageNumber - 1) * commentCount,  comments.size());
+    } else {
+        output = comments.subList((pageNumber - 1) * commentCount, pageNumber * commentCount);
+    }
+
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(comments));
+    response.getWriter().println(gson.toJson(new CommentResult(output, comments.size())));
   }
 
   /**
@@ -83,25 +91,5 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-  }
-
-  /**
-   * Get the number of comments from the request.
-   */
-  private int getCommentCount(HttpServletRequest request) {
-
-    // Convert the string version of the count to a float and define max.
-    Float commentCount = Float.parseFloat(request.getParameter("count"));
-    final int MAX_COMMENT_COUNT = 30;
-
-    if (commentCount < 0) {
-      return (int) 0;
-    }
-
-    if(commentCount > MAX_COMMENT_COUNT){
-      return (int) MAX_COMMENT_COUNT;
-    }
-
-    return (int) Math.round(commentCount);
   }
 }

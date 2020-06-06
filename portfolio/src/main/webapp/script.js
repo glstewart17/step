@@ -33,13 +33,13 @@ function showSlide() {
   let dots = document.getElementsByClassName("dot");
 
   // Comments corresponding to the images.
-  const comments = ['Selfie with the Nittany Lion at Penn State',
-    'High School graduation photo at the podium', 
-    'Convert to Code team photo',
-    'PIAA runner-up in volleyball'];
+  const comments = ["Selfie with the Nittany Lion at Penn State",
+    "High School graduation photo at the podium", 
+    "Convert to Code team photo",
+    "PIAA runner-up in volleyball"];
 
   // Add comment to the div under the image.
-  const commentContainer = document.getElementById('comment-container');
+  const commentContainer = document.getElementById("comment-container");
   commentContainer.innerText = comments[index];
 
   // Set all slides to not display, and remove active from all dots.
@@ -63,25 +63,35 @@ function showSlide() {
  */
 function getComments() {
 
-  const DEFAULT_COMMENT_COUNT = '5';
-  let commentCount = $("#comment-count").val();
-
-  // If comment count is an empty string, set to default.
-  if (commentCount === "") {
-    commentCount = DEFAULT_COMMENT_COUNT;
-  }
+  const countEntry = $("#comment-count").val();
+  const pageEntry = $("#page-number").val();
 
   // Make get request to get commentCount number of comments.
-  $.get("/data", { count: commentCount }, function (data, textStatus, jqXHR) {
+  $.get("/data", { count: countEntry, page: pageEntry }, function (data, textStatus, jqXHR) {
     
+    console.log(data);
     // Empty the list that will receive the comments.
-    const commentList = document.getElementById('comment-list');
+    const commentList = document.getElementById("comment-list");
     commentList.innerHTML="";
 
     // For each comment, create and append a list element.
-    data.forEach((comment) => {
+    data.comments.forEach((comment) => {
       commentList.appendChild(createCommentElement(comment));
     })
+    
+    // Create new page number options based on new get comments.
+    $("#page-number").empty();
+    $("#page-number").append("<option selected='selected' value='1'>1</option>");
+    
+    let key = 2;
+    while(data.count > (key - 1) * countEntry) {
+      $("#page-number").append($("<option></option>").val(key).text(key));
+      key += 1;
+    }
+
+    // Restore old page number option.
+    $("#page-number").val(pageEntry);
+
   }).catch((error) => {
     console.log(error)
   });
@@ -91,7 +101,7 @@ function getComments() {
  * Creates a list element that represents each comment.
  */ 
 function createCommentElement(comment) {
-  const commentElement = document.createElement('li');
+  const commentElement = document.createElement("li");
 
   const row = document.createElement("div");
   row.className = "row";
@@ -103,20 +113,27 @@ function createCommentElement(comment) {
   column20.className = "column-20";
 
   // Remove the comment and call to delete when the button is pressed.
-  const deleteButton = document.createElement('button');
+  const deleteButton = document.createElement("button");
   deleteButton.className = "delete"
   deleteButton.innerText = "Delete";
   deleteButton.addEventListener("click", () => {
-    deleteComment(comment);
-    commentElement.remove();
+    
+    // If only one element, go to the previous page, if not 1.
+    if ($("#comment-list").children().length == 1 && $("#page-number").val() != 1 ){
+      $("#page-number").val($("#page-number").val() - 1);
+    }
+
+    // Delete the comment with this id.
+    deleteComments(comment.id);
   });
 
-  const contentElement = document.createElement('p');
+  const contentElement = document.createElement("p");
   contentElement.innerText = comment.content;
 
-  const authorElement = document.createElement('p');
+  const authorElement = document.createElement("p");
   authorElement.innerText = "- " + comment.author;
 
+  // Append all elements in order.
   column20.append(deleteButton);
   column80.appendChild(contentElement);
   column80.appendChild(authorElement);
@@ -124,13 +141,6 @@ function createCommentElement(comment) {
   row.appendChild(column20);
   commentElement.appendChild(row);
   return commentElement;
-}
-
-/**
- * Delete a comment with a specific id from the comment model.
- */
-function deleteComment(comment) {
-  $.post("/delete-id-data", { id: comment.id } );
 }
 
 /**
@@ -145,30 +155,46 @@ function addComment() {
     return;
   }
 
-  // Make post request to submit new comment and getComments after.
+  // Make post request to submit new comment and get comments after.
   $.post("/data", { author: author, content: content } );
   getComments();
 };
 
 /**
- * Delete all the comments and call getComments.
+ * Delete comment based on id or all comments, then get comments.
  */
-function deleteAll() {
-  $.post("/delete-data");
+function deleteComments(commentId) {
+  $.post("/delete-data", { id: commentId }, function (data, textStatus, jqXHR) {
+    getComments();
+  }); 
+}
+
+/**
+ * When count changes, set page-number to 1 and get comments.
+ */
+function countChange() {
+  $("#page-number").val(1);
   getComments();
 }
 
 /**
- * Call the corresponding function when the button is clicked.
+ * Call the corresponding function when clicked or changed.
  */
 $(document).ready(function() {
-  $('#add-comment').click(function() {
+  $("#add-comment").click(function() {
     addComment();
   });
-  $('#delete-all').click(function() {
-    deleteAll();
+  $("#delete-all").click(function() {
+    $("#page-number").val(1);
+    deleteComments(1);
   });
-    $('#limit-comments').click(function() {
+  $("#limit-comments").click(function() {
+    getComments();
+  });
+  $("#comment-count").change(function(){
+    countChange();
+  });
+  $("#page-number").change(function(){
     getComments();
   });
 });

@@ -37,13 +37,22 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteDataServlet extends HttpServlet {
 
   /**
-   * Delete all of the commnents in the datastore.
+   * Delete all comments if id is 1, otherwise delete commnent with specific id.
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
+    long id = Long.parseLong(request.getParameter("id"));
+
+    if(id != 1) {
+      Key commentEntityKey = KeyFactory.createKey("Comment", id);
+      datastore.delete(commentEntityKey);
+      return;
+    }
+
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     List<Key> commentEntityKeys = new ArrayList<>();
