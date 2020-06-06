@@ -63,17 +63,34 @@ function showSlide() {
  */
 function getComments() {
 
+  const countEntry = $("#comment-count").val();
+  const pageEntry = $("#page-number").val();
+
   // Make get request to get commentCount number of comments.
-  $.get("/data", { count: $("#comment-count").val(), page: $("#page-number").val() }, function (data, textStatus, jqXHR) {
+  $.get("/data", { count: countEntry, page: pageEntry }, function (data, textStatus, jqXHR) {
     
+    console.log(data);
     // Empty the list that will receive the comments.
     const commentList = document.getElementById('comment-list');
     commentList.innerHTML="";
 
     // For each comment, create and append a list element.
-    data.forEach((comment) => {
+    data.comments.forEach((comment) => {
       commentList.appendChild(createCommentElement(comment));
     })
+    
+    $('#page-number').empty();
+    $('#page-number').append('<option selected="selected" value="1">1</option>');
+
+    let key = 2;
+
+    while(data.count > (key - 1) * countEntry) {
+      $('#page-number').append($("<option></option>").val(key).text(key));
+      key += 1;
+    }
+
+    $("#page-number").val(pageEntry);
+
   }).catch((error) => {
     console.log(error)
   });
@@ -99,8 +116,13 @@ function createCommentElement(comment) {
   deleteButton.className = "delete"
   deleteButton.innerText = "Delete";
   deleteButton.addEventListener("click", () => {
+    
+    // If only one element, go down one page.
+    if ($("#comment-list").length == 1){
+      $('#page-number').val($('#page-number').val() - 1);
+    }
     deleteComment(comment);
-    commentElement.remove();
+    getComments();
   });
 
   const contentElement = document.createElement('p');
@@ -109,6 +131,7 @@ function createCommentElement(comment) {
   const authorElement = document.createElement('p');
   authorElement.innerText = "- " + comment.author;
 
+  // Append all elements in order.
   column20.append(deleteButton);
   column80.appendChild(contentElement);
   column80.appendChild(authorElement);
@@ -145,11 +168,15 @@ function addComment() {
 /**
  * Delete all the comments and call getComments.
  */
-function deleteAll() {
-  $.post("/delete-data");
-  getComments();
+function deleteComments(commentId) {
+  $.post("/delete-data", { id: commentId }, function (data, textStatus, jqXHR) {
+    getComments();
+  }); 
 }
 
+/**
+ * When count changes, set page-number to 1.
+ */
 function countChange() {
   $('#page-number').val(1);
   getComments();
@@ -163,7 +190,8 @@ $(document).ready(function() {
     addComment();
   });
   $('#delete-all').click(function() {
-    deleteAll();
+    $("#page-number").val(1);
+    deleteComments(null);
   });
   $('#limit-comments').click(function() {
     getComments();
