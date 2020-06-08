@@ -7,6 +7,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button {
+  background-color: rgb(54, 112, 167);
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  float: right;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+button:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
 .card {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
@@ -28,6 +47,16 @@ body {
   float: left;
   width: 50%;
   padding: 15px 0px;
+}
+
+.column-20 {
+  float: left;
+  width: 20%;
+}
+
+.column-80 {
+  float: left;
+  width: 80%;
 }
 
 .column a{
@@ -56,11 +85,26 @@ body {
   color: #bbb;
 }
 
+#comment-list {
+  width: 100%;
+  list-style-type:none;
+  padding:0;
+  margin:0;
+}
+
+#comment-list li{
+  border-bottom:1px solid #bbb;
+}
+
 #content {
   margin-left: auto;
   margin-right: auto;
   width: 650px;
   padding-bottom: 150px;
+}
+
+.delete {
+  background-color:  rgb(167, 54, 54);
 }
 
 /* Dot and fade animation, found on w3school */
@@ -120,6 +164,8 @@ body {
 
 .footer-column a {
   text-decoration: none;
+  font-size: 1em;
+  font-weight: bold;
   color: white;
 }
 
@@ -139,10 +185,47 @@ body {
   width: 650px;
 }
 
+.count-form {
+  border-bottom:1px solid #bbb;
+}
+
+.form-last {
+  border-bottom: none;
+  align-content: center;
+}
+
+.form-last .row {
+  display: flex;
+  justify-content: center;
+}
+
+.form-last button{
+  float: none;
+}
+
 img {
   width: 100%;
   height:100%;
   border-radius: 5px 5px 0px 0px;
+}
+
+input[type=text], input[type=number], select, textarea {
+  width: 100%;
+  margin-top: 16px;
+  font-family:Arial, Helvetica, sans-serif;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+}
+
+label {
+  margin-top: 16px;
+  padding-top: 10px;
+  display: inline-block;
+}
+
+.no-top-margin {
+  margin-top: 0px;
 }
 
 #page {
@@ -153,6 +236,12 @@ img {
 #quote-container {
   margin-top: 16px;
   margin-bottom: 16px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .secret {
@@ -193,16 +282,9 @@ img {
   padding: 2px 16px;
 }
 
-.slideshow-subtitle a{
-  text-decoration: none;
-  color: white;
-}
-
-.slideshow-subtitle .card{
-  background-color: rgb(54, 112, 167);
-  width: 25%;
-  margin-bottom: 16px;
-  text-align: center;
+textarea {
+  height:102px;
+  resize: vertical;
 }
 
 .top-navigation {

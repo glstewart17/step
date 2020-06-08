@@ -14,7 +14,14 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.QuotePerson;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.data.Comment;
+import com.google.sps.data.CommentResult;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,48 +31,66 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns a random quote from the office. */
+/** Servlet that returns comments and handles their creation. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<QuotePerson> quotes;
-
   /**
-   * Add all the quotes to quotes using type QuotePerosn on start.
-   */
-  @Override
-  public void init() {
-    quotes = new ArrayList<>();
-    quotes.add(new QuotePerson("Bears. Beets. Battlestar Galactica.", "Jim Halpert"));
-    quotes.add(new QuotePerson("I'm not supersitious, but I am a little stitious.", "Michael Scott"));
-    quotes.add(new QuotePerson("The worst thing about prison was the dementors.", "Michael Scott"));
-    quotes.add(new QuotePerson("I talk a lot. so I've learned to tune myself out.", "Kelly Kapoor"));
-    quotes.add(new QuotePerson("You couldn’t handle my undivided attention.", "Dwight Schrute"));
-    quotes.add(new QuotePerson(
-        "Sometimes I'll start a sentence and I don't even know where it's going. "
-            + "I just hope I find it along the way.", "Michael Scott"));
-  }
-
-  /**
-   * For a get request, return a JSON version of a quote and person.
+   * For a get request, return a JSON with all the comments and the number of comments.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    QuotePerson quote = quotes.get((int) (Math.random() * quotes.size()));
+    
+    // Get the count per page and page number from the request.
+    int commentsPerPage = Integer.parseInt(request.getParameter("count"));
+    int pageNumber = Integer.parseInt(request.getParameter("page"));
 
-    String json = convertToJsonUsingGson(quote);
+    // Prepare query and get all comments in Datastore.
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
 
+    // Create a list of comments based on results, with a limited number of comments.
+    List<Comment> comments = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      Comment comment = new Comment(
+        (long) entity.getKey().getId(),  
+        (String) entity.getProperty("content"), 
+        (String) entity.getProperty("author"), 
+        (long) entity.getProperty("timestamp"));
+      comments.add(comment);
+    }
+
+    // Store total number of comments, then assign a sublist with the comments on the specified page.
+    int commentCount = comments.size();
+    if (pageNumber * commentsPerPage > commentCount) {
+      comments = comments.subList((pageNumber - 1) * commentsPerPage,  commentCount);
+    } else {
+      comments = comments.subList((pageNumber - 1) * commentsPerPage, pageNumber * commentsPerPage);
+    }
+
+    // Converts comments into a JSON string using the Gson library.
+    Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount)));
   }
 
   /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: Gson library 
-   * dependency added to pom.xml.
+   * For a post request, get all attributes, create an entity, fill the attributes, and store entity.
    */
-  private String convertToJsonUsingGson(QuotePerson quote) {
-    Gson gson = new Gson();
-    String json = gson.toJson(quote);
-    return json;
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    String content = request.getParameter("content");
+    String author = request.getParameter("author");
+    long timestamp = System.currentTimeMillis();
+
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("content", content);
+    commentEntity.setProperty("author", author);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
   }
 }

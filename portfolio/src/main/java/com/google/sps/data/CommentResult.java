@@ -14,22 +14,18 @@
 
 package com.google.sps.data;
 
-/** Class containing quotes and the person who said it. */
-public final class QuotePerson {
+import com.google.sps.data.Comment;
+import java.util.ArrayList;
+import java.util.List;
 
-  private final String quote;
-  private final String person;
+/** Class containing a list of the comments being returned and the number of comments in datastore. */
+public final class CommentResult {
 
-  public QuotePerson(String quote, String person) {
-    this.quote = quote;
-    this.person = person;
-  }
+  private final List<Comment> comments;
+  private final int commentCount;
 
-  public String getQuote() {
-    return quote;
-  }
-
-  public String getPerson() {
-    return person;
+  public CommentResult(List<Comment> comments, int commentCount) {
+    this.comments = comments;
+    this.commentCount = commentCount;
   }
 }

@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="script.js"></script>
   </head>
-  <body onload="showSlide(); getOfficeQuote();">
+  <body onload="showSlide(); getComments();">
     <div id="page">
       <div class="top-navigation">
         <a class="active" href="index.html">Home</a>
@@ -50,19 +51,11 @@
           <div class="slideshow-subtitle">
             <p>Hi, my name is Gabriel and I am a rising junior at Penn State and a STEP intern at Google. 
               Feel free to look at my work and learn more about me.
-            <div class="card">
-              <a href="about.html">
-                <div class="card-container">
-                  <h4><b>About Me</b></h4> 
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="slideshow">
-          <div class="slideshow-subtitle">
-            <h4><b>Random Quote from the Office</b></h4> 
-            <div id="quote-container">Quote coming soon.</div>
+            <form action="about.html" class="form-last">
+              <div class="row">
+                <button class="no-top-margin">About Me</button>
+              </div>
+            </form>
           </div>
         </div>
         <h2>My Work</h2>
@@ -95,6 +88,66 @@
               </div>
             </div>
           </a>
+        </div>
+        <h2>Comments</h2>
+        <div class="slideshow">
+          <div class="slideshow-subtitle">
+            <ul id="comment-list"></ul>
+            <div class="count-form">
+              <div class="row">                
+                <div class="column-80">
+                  <label for="comment-count">Select the number of comments per page</label>
+                </div>
+                <div class="column-20">
+                  <select id="comment-count" name="comment-count">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row"> 
+                <div class="column-80">
+                  <label for="page-number">Select the page number</label>
+                </div>
+                <div class="column-20">
+                  <select id="page-number" name="page-number">
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <button id="limit-comments">Refresh</button>
+              </div>
+            </div>
+            <div class="count-form">
+              <div class="row">
+                <div class="column-20">
+                  <label for="comment-content">Comment</label>
+                </div>
+                <div class="column-80">
+                  <textarea type="text" id="comment-content" name="comment-content" placeholder="Your comment..."></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column-20">
+                  <label for="comment-author">Author</label>
+                </div>
+                <div class="column-80">
+                  <input type="text" id="comment-author" name="comment-author" placeholder="Your name..."/>
+                </div>
+              </div>
+              <div class="row">
+                <button id="add-comment">Submit</button>
+              </div>
+            </div>
+            <div class="form-last">
+              <div class="row">
+                <button id="delete-all" class="delete">Delete All Comments</button>
+              </div>
+            </div>
+          </div>
         </div>
         <p class="secret">I do not like making portfolios.
       </div>
