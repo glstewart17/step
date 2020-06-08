@@ -31,18 +31,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns a random quote from the office. */
+/** Servlet that returns comments and handles their creation. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
   /**
-   * For a get request, return a JSON version of all the comments.
+   * For a get request, return a JSON with all the comments and the number of comments.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
     // Get the count per page and page number from the request.
-    int commentCount = Integer.parseInt(request.getParameter("count"));
+    int commentsPerPage = Integer.parseInt(request.getParameter("count"));
     int pageNumber = Integer.parseInt(request.getParameter("page"));
 
     // Prepare query and get all comments in Datastore.
@@ -61,17 +61,18 @@ public class DataServlet extends HttpServlet {
       comments.add(comment);
     }
 
-    List<Comment> output = new ArrayList<>();
-    if (pageNumber * commentCount > comments.size() ) {
-        output = comments.subList((pageNumber - 1) * commentCount,  comments.size());
+    // Store total number of comments, then assign a sublist with the comments on the specified page.
+    int commentCount = comments.size();
+    if (pageNumber * commentsPerPage > commentCount) {
+      comments = comments.subList((pageNumber - 1) * commentsPerPage,  commentCount);
     } else {
-        output = comments.subList((pageNumber - 1) * commentCount, pageNumber * commentCount);
+      comments = comments.subList((pageNumber - 1) * commentsPerPage, pageNumber * commentsPerPage);
     }
 
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(new CommentResult(output, comments.size())));
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount)));
   }
 
   /**

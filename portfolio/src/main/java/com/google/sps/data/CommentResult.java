@@ -18,14 +18,14 @@ import com.google.sps.data.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Class containing the author, content, and timestamp of a comment. */
+/** Class containing a list of the comments being returned and the number of comments in datastore. */
 public final class CommentResult {
 
   private final List<Comment> comments;
-  private final int count;
+  private final int commentCount;
 
-  public CommentResult(List<Comment> comments, int count) {
+  public CommentResult(List<Comment> comments, int commentCount) {
     this.comments = comments;
-    this.count = count;
+    this.commentCount = commentCount;
   }
 }

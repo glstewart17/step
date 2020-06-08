@@ -46,7 +46,7 @@ public class DeleteDataServlet extends HttpServlet {
     
     long id = Long.parseLong(request.getParameter("id"));
 
-    if(id != 1) {
+    if (id != 1) {
       Key commentEntityKey = KeyFactory.createKey("Comment", id);
       datastore.delete(commentEntityKey);
       return;
