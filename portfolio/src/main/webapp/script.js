@@ -201,10 +201,14 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
-  $("#upload-button").click(function() {
-    filePost();
+  $("#btnSubmit").click(function (event) {
+    //stop submit the form, we will post it manually.
+    event.preventDefault();
+    console.log($("#btnSubmit").val());
+    filePost()
   });
 });
+
 
 function fetchBlobstoreUrlAndShowForm() {
   fetch('/blobstore-upload-url')
@@ -212,18 +216,44 @@ function fetchBlobstoreUrlAndShowForm() {
         return response.text();
       })
       .then((imageUploadUrl) => {
-        const messageForm = document.getElementById('my-form');
-        messageForm.action = imageUploadUrl;
-        messageForm.classList.remove('hidden');
+        $("#btnSubmit").val(imageUploadUrl);
+        $("#my-form").remove('hidden');
       });
 }
 
 /**
  * Add a comment using the author and content field.
- */
+*/
 function filePost() {
-  const messageForm = document.getElementById('my-form');
-  let imageUploadUrl = messageForm.action;
-  
-  console.log(imageUploadUrl);
+  var form = $('#upload-form')[0];
+
+  // Create an FormData object
+  var data = new FormData(form);
+
+  // If you want to add an extra field for the FormData
+  data.append("CustomField", "This is some extra data, testing");
+
+  // disabled the submit button
+  $("#btnSubmit").prop("disabled", true);
+
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: $("#btnSubmit").val(),
+    data: data,
+    processData: false,
+    contentType: false,
+    cache: false,
+    timeout: 600000,
+    success: function (msg, status, jqXHR) {
+      console.log(msg);
+    },
+    error: function (e) {
+
+      $("#result").text(e.responseText);
+      console.log("ERROR : ", e);
+      $("#btnSubmit").prop("disabled", false);
+
+    }
+  });
 };

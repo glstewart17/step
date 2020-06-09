@@ -28,14 +28,9 @@
         <h2>Comments</h2>
         <div class="slideshow">
           <div class="slideshow-subtitle">
-            <form id="my-form" class="hidden" method="POST" enctype="multipart/form-data">
-              <p>Type some text:</p>
-              <textarea name="message"></textarea>
-              <br/>
-              <p>Upload an image:</p>
-              <input type="file" name="image">
-              <br/><br/>
-              <button type="submit" id="upload-button" value="upload">Submit</button>
+            <form method="POST" enctype="multipart/form-data" id="upload-form" class="hidden">
+                <input type="file" name="files"/><br/><br/>
+                <button value="Submit" id="btnSubmit">Submit</button> 
             </form>
             <div class="count-form">
               <div class="row">                
