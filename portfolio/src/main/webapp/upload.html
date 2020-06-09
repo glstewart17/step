@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body onload="fetchBlobstoreUrlAndShowForm()">
+    <div id="page">
+      <div class="top-navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="projects.html">Projects</a>
+        <a href="blogging.html">Blogging</a>
+        <a href="about.html">About</a>
+        <div class="top-navigation-right">
+          <a href="https://www.linkedin.com/in/gabriel-stewart-311206171">
+            <img src="images/linkedin-logo.png" alt="Linkedin Account">
+          </a>
+          <a href="https://github.com/glstewart17">
+            <img src="images/github-logo.png" alt="Github Account">
+          </a>
+        </div>
+      </div>
+      <div id="content">
+        <h2>Comments</h2>
+        <div class="slideshow">
+          <div class="slideshow-subtitle">
+            <form id="my-form" class="hidden" method="POST" enctype="multipart/form-data">
+              <p>Type some text:</p>
+              <textarea name="message"></textarea>
+              <br/>
+              <p>Upload an image:</p>
+              <input type="file" name="image">
+              <br/><br/>
+              <button type="submit" id="upload-button" value="upload">Submit</button>
+            </form>
+            <div class="count-form">
+              <div class="row">                
+                <div class="column-80">
+                  <label for="comment-count">Upload number of comments per page</label>
+                </div>
+                <div class="column-20">
+                  <select id="comment-count" name="comment-count">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row"> 
+                <div class="column-80">
+                  <label for="page-number">Select the page number</label>
+                </div>
+                <div class="column-20">
+                  <select id="page-number" name="page-number">
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <button id="limit-comments">Refresh</button>
+              </div>
+            </div>
+            <div class="count-form">
+              <div class="row">
+                <div class="column-20">
+                  <label for="comment-content">Comment</label>
+                </div>
+                <div class="column-80">
+                  <textarea type="text" id="comment-content" name="comment-content" placeholder="Your comment..."></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column-20">
+                  <label for="comment-author">Author</label>
+                </div>
+                <div class="column-80">
+                  <input type="text" id="comment-author" name="comment-author" placeholder="Your name..."/>
+                </div>
+              </div>
+              <div class="row">
+                <button id="add-comment">Submit</button>
+              </div>
+            </div>
+            <div class="form-last">
+              <div class="row">
+                <button id="delete-all" class="delete">Delete All Comments</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="secret">I do not like making portfolios.
+      </div>
+      <div class="footer">
+        <div class="footer-container">
+          <div class="footer-column">
+            <a href="leadership.html">Leadership</a>
+          </div>
+          <div class="footer-column">
+            <a href="projects.html">Projects</a>
+          </div>
+          <div class="footer-column-logo">
+            <a href="index.html">
+              <img src="images/logo-white.svg" alt="Logo">
+            </a>
+          </div>
+          <div class="footer-column">
+            <a href="blogging.html">Blogging</a>
+          </div>
+          <div class="footer-column">
+            <a href="about.html">About</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

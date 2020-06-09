@@ -201,4 +201,29 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
+  $("#upload-button").click(function() {
+    filePost();
+  });
 });
+
+function fetchBlobstoreUrlAndShowForm() {
+  fetch('/blobstore-upload-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        const messageForm = document.getElementById('my-form');
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
+      });
+}
+
+/**
+ * Add a comment using the author and content field.
+ */
+function filePost() {
+  const messageForm = document.getElementById('my-form');
+  let imageUploadUrl = messageForm.action;
+  
+  console.log(imageUploadUrl);
+};
