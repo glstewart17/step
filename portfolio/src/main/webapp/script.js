@@ -68,8 +68,7 @@ function getComments() {
 
   // Make get request to get commentCount number of comments.
   $.get("/data", { count: countEntry, page: pageEntry }, function(data, textStatus, jqXHR) {
-    
-    console.log(data);
+
     // Empty the list that will receive the comments.
     const commentList = document.getElementById("comment-list");
     commentList.innerHTML="";
@@ -92,7 +91,6 @@ function getComments() {
 
     // Restore old page number option.
     $("#page-number").val(pageEntry);
-
   }).catch((error) => {
     console.log(error)
   });
@@ -154,6 +152,7 @@ function addComment() {
   let author = $("#comment-author").val();
   let content = $("#comment-content").val();
 
+  // If a field is empty, alert the user and do not post.
   if (author === "" || content === "") {
     alert("All fields must be filled before submission.");
     return;
@@ -201,4 +200,83 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
+  $("#upload-file").click(function() {
+    filePost();
+  });
+
+  // Disable file submission button initially.
+  $("#upload-file").prop("disabled", true);
 });
+
+/**
+ * Get a blobstore URL and add to the button, display the form when done.
+ */
+function fetchBlobstoreUrlAndEnableButton() {
+  fetch('/blobstore-upload-url').then((response) => {
+    return response.text();
+  }).then((imageUploadUrl) => {
+    $("#upload-file").val(imageUploadUrl);
+    $("#upload-file").prop("disabled", false);
+  });
+}
+
+/**
+ * Add a comment using the author and content field.
+ */
+function filePost() {
+
+  // Create a FormData object and add the file.
+  var data = new FormData();
+  data.append("file", $("#file").prop("files")[0]);
+
+  // Disable the button and empty the result div.
+  $("#upload-file").prop("disabled", true);
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML="";
+
+  // Post the file to the blobstore URL.
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: $("#upload-file").val(),
+    data: data,
+    processData: false,
+    contentType: false,
+    cache: false,
+    timeout: 600000,
+    success: function(data, status, jqXHR) {
+      
+      // Create a p with the success message and add it to to the page.
+      const message = document.createElement("p");
+      message.innerText = "Your image has been stored.";
+      const row1 = document.createElement("div");
+      row1.className = "row";
+      row1.appendChild(message);
+      resultDiv.appendChild(row1);
+      
+      // Create an img to display the img and add it to to the page.
+      const img = document.createElement("img");
+      img.src = data;
+      const row2 = document.createElement("div");
+      row2.className = "row";
+      row2.appendChild(img);    
+      resultDiv.appendChild(row2);
+
+      // Fetch another blobstore URL and enable the submit button.
+      fetchBlobstoreUrlAndEnableButton();
+    },
+    error: function(error) {
+
+      // Create a p with the error message and add it to to the page.
+      const message = document.createElement("p");
+      message.innerText = error.responseText;
+      const row = document.createElement("div");
+      row.className = "row";
+      row.appendChild(message);
+      resultDiv.appendChild(row);
+      
+      // Fetch another blobstore URL and enable the submit button.
+      fetchBlobstoreUrlAndEnableButton();
+    }
+  });
+};
