@@ -34,26 +34,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * When the user submits the form, Blobstore processes the file upload and then forwards the request
- * to this servlet. This servlet can then process the request using the file URL we get from
- * Blobstore.
+ * Handle the post of a file, Blobstore processes the file upload and then returns the file URL.
  */
 @WebServlet("/my-form-handler")
 public class FormHandlerServlet extends HttpServlet {
 
+  /**
+   * Get and return URL of the image that the user uploaded to Blobstore.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-
-    // Get the URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "file");
-    
-    System.out.println(imageUrl); 
-
     response.setContentType("text/html");
     response.getWriter().println(imageUrl);
   }
 
-  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+  /**
+   * Returns a URL that points to the uploaded file, or null if the user didn't upload a file.
+   */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
