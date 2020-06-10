@@ -201,59 +201,84 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
-  $("#btnSubmit").click(function (event) {
-    //stop submit the form, we will post it manually.
-    event.preventDefault();
-    console.log($("#btnSubmit").val());
-    filePost()
+  $("#upload-file").click(function() {
+    filePost();
   });
 });
 
 
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/blobstore-upload-url')
-      .then((response) => {
-        return response.text();
-      })
-      .then((imageUploadUrl) => {
-        $("#btnSubmit").val(imageUploadUrl);
-        $("#my-form").remove('hidden');
-      });
+  fetch('/blobstore-upload-url').then((response) => {
+    return response.text();
+  }).then((imageUploadUrl) => {
+    $("#upload-file").val(imageUploadUrl);
+    $("#my-form").remove('hidden');
+  });
 }
 
 /**
  * Add a comment using the author and content field.
 */
 function filePost() {
-  var form = $('#upload-form')[0];
 
   // Create an FormData object
-  var data = new FormData(form);
+  var data = new FormData();
 
   // If you want to add an extra field for the FormData
-  data.append("CustomField", "This is some extra data, testing");
+  data.append("file", $("#file").prop("files")[0]);
 
   // disabled the submit button
-  $("#btnSubmit").prop("disabled", true);
+  $("#upload-file").prop("disabled", true);
+
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML="";
 
   $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
-    url: $("#btnSubmit").val(),
+    url: $("#upload-file").val(),
     data: data,
     processData: false,
     contentType: false,
     cache: false,
     timeout: 600000,
-    success: function (msg, status, jqXHR) {
-      console.log(msg);
+    success: function (data, status, jqXHR) {
+
+      console.log("SUCCESS : ", data);
+
+      const message = document.createElement("p");
+      message.innerText = "Your image has been stored";
+      const row1 = document.createElement("div");
+      row1.className = "row";
+      row1.appendChild(message);
+      resultDiv.appendChild(row1);
+
+      const img = document.createElement("img");
+      img.src = data;
+      const row2 = document.createElement("div");
+      row2.className = "row";
+      row2.appendChild(img);    
+      resultDiv.appendChild(row2);
+
+      fetchBlobstoreUrlAndShowForm();
+      $("#upload-file").prop("disabled", false);
     },
     error: function (e) {
-
-      $("#result").text(e.responseText);
+  
       console.log("ERROR : ", e);
-      $("#btnSubmit").prop("disabled", false);
 
+      // Create the row, which will hold the columns in the same row.
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const message = document.createElement("p");
+      message.innerText = e.responseText;
+
+      row.appendChild(message);
+      resultDiv.appendChild(row);
+      
+      fetchBlobstoreUrlAndShowForm();
+      $("#upload-file").prop("disabled", false);
     }
   });
 };

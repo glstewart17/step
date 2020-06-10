@@ -42,12 +42,10 @@ import javax.servlet.http.HttpServletResponse;
 public class FormHandlerServlet extends HttpServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    System.out.println("Made it"); 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
 
     // Get the URL of the image that the user uploaded to Blobstore.
-    String imageUrl = getUploadedFileUrl(request, "files");
+    String imageUrl = getUploadedFileUrl(request, "file");
     
     System.out.println(imageUrl); 
 

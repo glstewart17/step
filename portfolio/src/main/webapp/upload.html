@@ -25,65 +25,22 @@
         </div>
       </div>
       <div id="content">
-        <h2>Comments</h2>
+        <h2>Upload Image</h2>
         <div class="slideshow">
           <div class="slideshow-subtitle">
-            <form method="POST" enctype="multipart/form-data" id="upload-form" class="hidden">
-                <input type="file" name="files"/><br/><br/>
-                <button value="Submit" id="btnSubmit">Submit</button> 
-            </form>
             <div class="count-form">
               <div class="row">                
                 <div class="column-80">
-                  <label for="comment-count">Upload number of comments per page</label>
+                  <input type="file" id="file"/><br/><br/>
                 </div>
                 <div class="column-20">
-                  <select id="comment-count" name="comment-count">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                  </select>
+                  <button value="Submit" id="upload-file">Submit</button> 
                 </div>
-              </div>
-              <div class="row"> 
-                <div class="column-80">
-                  <label for="page-number">Select the page number</label>
-                </div>
-                <div class="column-20">
-                  <select id="page-number" name="page-number">
-                    <option value="1">1</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <button id="limit-comments">Refresh</button>
               </div>
             </div>
-            <div class="count-form">
+            <div id="result" class="form-last">
               <div class="row">
-                <div class="column-20">
-                  <label for="comment-content">Comment</label>
-                </div>
-                <div class="column-80">
-                  <textarea type="text" id="comment-content" name="comment-content" placeholder="Your comment..."></textarea>
-                </div>
-              </div>
-              <div class="row">
-                <div class="column-20">
-                  <label for="comment-author">Author</label>
-                </div>
-                <div class="column-80">
-                  <input type="text" id="comment-author" name="comment-author" placeholder="Your name..."/>
-                </div>
-              </div>
-              <div class="row">
-                <button id="add-comment">Submit</button>
-              </div>
-            </div>
-            <div class="form-last">
-              <div class="row">
-                <button id="delete-all" class="delete">Delete All Comments</button>
+                <p>Choose a file and submit
               </div>
             </div>
           </div>
