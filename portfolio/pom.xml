@@ -45,7 +45,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <deploy.projectId>gabrielstewart-step-2020</deploy.projectId>
+          <deploy.projectId>gabrielstewart-step</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
@@ -58,7 +58,7 @@
         <version>2.2.0</version>
         <!-- TODO: uncomment configuration block and provide project ID. -->
         <!-- <configuration>
-            <deploy.projectId>gabrielstewart-step-2020</deploy.projectId>
+            <deploy.projectId>gabrielstewart-step</deploy.projectId>
             <deploy.version>1</deploy.version>
         </configuration> -->
       </plugin>
