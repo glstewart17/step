@@ -121,19 +121,44 @@
                 <button id="limit-comments">Refresh</button>
               </div>
             </div>
-            <div id="login-form" class="form">
-            </div>
-            <div class="form">
-              <div class="row">
-                <div class="column-20">
-                  <label for="comment-content">Comment</label>
+            <div id="comment-form">
+              <div class="form">
+                <div class="row">
+                  <div class="column-20">
+                    <label for="comment-content">Comment</label>
+                  </div>
+                  <div class="column-80">
+                    <textarea type="text" id="comment-content" name="comment-content" placeholder="Your comment..."></textarea>
+                  </div>
                 </div>
-                <div class="column-80">
-                  <textarea type="text" id="comment-content" name="comment-content" placeholder="Your comment..."></textarea>
+                <div class="row">
+                  <button id="add-comment">Submit</button>
                 </div>
               </div>
-              <div class="row">
-                <button id="add-comment">Submit</button>
+            </div>
+            <div id="login-form" class="form">
+            </div>
+            <div id="update-user-form">
+              <div class="form">
+                <div class="row">
+                  <div class="column-20">
+                    <label for="new-user-name">Update Name</label>
+                  </div>
+                  <div class="column-80">
+                    <input type="text" id="new-user-name" name="new-user-name" placeholder="New user name..."/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="column-20">
+                    <label for="File">Update Icon</label>
+                  </div>             
+                  <div class="column-80">
+                    <input type="file" id="file"/><br/><br/>
+                  </div>
+                </div>
+                <div class="row">
+                  <button value="Submit" id="upload-file">Submit</button>
+                </div>
               </div>
             </div>
             <div class="form-last">

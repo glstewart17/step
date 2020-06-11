@@ -66,6 +66,8 @@ function getComments() {
   const countEntry = $("#comment-count").val();
   const pageEntry = $("#page-number").val();
 
+  hideForms();
+
   // Make get request to get commentCount number of comments.
   $.get("/data", { count: countEntry, page: pageEntry }, function(data, textStatus, jqXHR) {
 
@@ -93,6 +95,7 @@ function getComments() {
     $("#page-number").val(pageEntry);
 
     // Handle login status.
+    showForms(data.userName);
     checkLogin(data.userName, data.url);
   }).catch((error) => {
     console.log(error)
@@ -338,12 +341,24 @@ function checkLogin(id, url) {
     });
 
     const message = document.createElement("label");
-    message.innerText = "Logged in as: " + id;
+    message.innerText = "Signed in as: " + id;
 
     columnLogin.append(logoutButton);
     columnLabel.appendChild(message);
     row.appendChild(columnLabel);
     row.appendChild(columnLogin);
     loginDiv.appendChild(row);
+  }
+}
+
+function hideForms() {
+  $("#update-user-form").css({"display":"none"});
+  $("#comment-form").css({"display":"none"});
+}
+
+function showForms(user) {
+  if (user != "") {
+    $("#update-user-form").css({"display":"unset"});
+    $("#comment-form").css({"display":"unset"});
   }
 }
