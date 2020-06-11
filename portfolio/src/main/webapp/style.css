@@ -228,6 +228,10 @@ label {
   display: inline-block;
 }
 
+.login {
+  background-color: rgb(40, 209, 48);
+}
+
 .no-top-margin {
   margin-top: 0px;
 }

@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.CommentResult;
 import com.google.gson.Gson;
@@ -69,10 +71,21 @@ public class DataServlet extends HttpServlet {
       comments = comments.subList((pageNumber - 1) * commentsPerPage, pageNumber * commentsPerPage);
     }
 
+    // If user logged in, find id and get logout url, otherwise find login url.
+    UserService userService = UserServiceFactory.getUserService();
+    String id = "";
+    String url;
+    if (userService.isUserLoggedIn()) {
+      id = userService.getCurrentUser().getUserId();
+      url = userService.createLogoutURL("/index.html");
+    } else {
+      url = userService.createLoginURL("/index.html");
+    }
+
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount)));
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, id, url)));
   }
 
   /**
@@ -81,8 +94,9 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
+    UserService userService = UserServiceFactory.getUserService();
     String content = request.getParameter("content");
-    String author = request.getParameter("author");
+    String author = userService.getCurrentUser().getUserId();
     long timestamp = System.currentTimeMillis();
 
     Entity commentEntity = new Entity("Comment");

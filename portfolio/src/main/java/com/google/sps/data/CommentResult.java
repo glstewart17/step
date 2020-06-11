@@ -23,9 +23,13 @@ public final class CommentResult {
 
   private final List<Comment> comments;
   private final int commentCount;
+  private final String userName;
+  private final String url;
 
-  public CommentResult(List<Comment> comments, int commentCount) {
+  public CommentResult(List<Comment> comments, int commentCount, String userName, String url) {
     this.comments = comments;
     this.commentCount = commentCount;
+    this.userName = userName;
+    this.url = url;
   }
 }

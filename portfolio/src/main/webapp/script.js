@@ -91,6 +91,9 @@ function getComments() {
 
     // Restore old page number option.
     $("#page-number").val(pageEntry);
+
+    // Handle login status.
+    checkLogin(data.userName, data.url);
   }).catch((error) => {
     console.log(error)
   });
@@ -149,17 +152,16 @@ function createCommentElement(comment) {
  * Add a comment using the author and content field.
  */
 function addComment() {
-  let author = $("#comment-author").val();
   let content = $("#comment-content").val();
 
   // If a field is empty, alert the user and do not post.
-  if (author === "" || content === "") {
+  if (content === "") {
     alert("All fields must be filled before submission.");
     return;
   }
 
   // Make post request to submit new comment and get comments after.
-  $.post("/data", { author: author, content: content } );
+  $.post("/data", { content: content } );
   getComments();
 };
 
@@ -280,3 +282,68 @@ function filePost() {
     }
   });
 };
+
+
+function checkLogin(id, url) {
+  
+  const loginDiv = document.getElementById("login-form");
+  loginDiv.innerHTML="";
+  if (id == "") {
+
+    // Create the row, which will hold the columns in the same row.
+    const row = document.createElement("div");
+    row.className = "row";
+
+    // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+    const columnLabel = document.createElement("div");
+    columnLabel.className = "column-80";
+    const columnLogin = document.createElement("div");
+    columnLogin.className = "column-20";
+
+    // Remove the comment and call to delete when the button is pressed.
+    const loginButton = document.createElement("button");
+    loginButton.className = "login"
+    loginButton.innerText = "Login";
+    loginButton.addEventListener("click", () => {
+    window.location.href=url;
+    });
+
+    const message = document.createElement("label");
+    message.innerText = "Login to comment";
+
+    columnLogin.append(loginButton);
+    columnLabel.appendChild(message);
+    row.appendChild(columnLabel);
+    row.appendChild(columnLogin);
+    loginDiv.appendChild(row);
+  }
+  else {
+
+    // Create the row, which will hold the columns in the same row.
+    const row = document.createElement("div");
+    row.className = "row";
+
+    // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+    const columnLabel = document.createElement("div");
+    columnLabel.className = "column-80";
+    const columnLogin = document.createElement("div");
+    columnLogin.className = "column-20";
+
+    // Remove the comment and call to delete when the button is pressed.
+    const logoutButton = document.createElement("button");
+    logoutButton.className = "login"
+    logoutButton.innerText = "Logout";
+    logoutButton.addEventListener("click", () => {
+      window.location.href=url;
+    });
+
+    const message = document.createElement("label");
+    message.innerText = "Logged in as: " + id;
+
+    columnLogin.append(logoutButton);
+    columnLabel.appendChild(message);
+    row.appendChild(columnLabel);
+    row.appendChild(columnLogin);
+    loginDiv.appendChild(row);
+  }
+}
