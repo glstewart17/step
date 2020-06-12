@@ -71,15 +71,13 @@ function getComments() {
   // Make get request to get commentCount number of comments.
   $.get("/data", { count: countEntry, page: pageEntry }, function(data, textStatus, jqXHR) {
 
-    console.log(data);
-    
     // Empty the list that will receive the comments.
     const commentList = document.getElementById("comment-list");
     commentList.innerHTML="";
 
     // For each comment, create and append a list element.
     data.comments.forEach((comment) => {
-      commentList.appendChild(createCommentElement(comment));
+      commentList.appendChild(createCommentElement(comment, data.userName));
     })
     
     // Create new page number options based on new get comments.
@@ -107,8 +105,8 @@ function getComments() {
 /**
  * Creates a list element that represents each comment.
  */ 
-function createCommentElement(comment) {
-  
+function createCommentElement(comment, userName) {
+
   // Create a commentElement that will be placed in commentList. 
   const commentElement = document.createElement("li");
 
@@ -116,39 +114,66 @@ function createCommentElement(comment) {
   const row = document.createElement("div");
   row.className = "row";
 
-  // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+  // Create a column for the icon div and icon of the author.
+  const columnIcon = document.createElement("div");
+  columnIcon.className = "column-20";
+  const iconDiv = document.createElement("div");
+  iconDiv.className = "icon";
+  const img = document.createElement("img");
+  img.src = comment.image;
+  iconDiv.appendChild(img);
+  columnIcon.appendChild(iconDiv);
+
+  // Create a column for content and a delete button, which will take up 80% of the row.
   const columnContent = document.createElement("div");
-  columnContent.className = "column-80";
   const columnDelete = document.createElement("div");
-  columnDelete.className = "column-20";
 
-  // Remove the comment and call to delete when the button is pressed.
-  const deleteButton = document.createElement("button");
-  deleteButton.className = "delete"
-  deleteButton.innerText = "Delete";
-  deleteButton.addEventListener("click", () => {
+  if (comment.author == userName) {
+
+    // Split the reamain percent of the row and assign classes.
+    columnContent.className = "column-60";
+    columnDelete.className = "column-20";
+
+    // Remove the comment and call to delete when the button is pressed.
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "delete"
+    deleteButton.innerText = "Delete";
+    deleteButton.addEventListener("click", () => {
     
-    // If only one element, go to the previous page, if not 1.
-    if ($("#comment-list").children().length == 1 && $("#page-number").val() != 1 ) {
-      $("#page-number").val($("#page-number").val() - 1);
-    }
+      // If only one element, go to the previous page, if not 1.
+      if ($("#comment-list").children().length == 1 && $("#page-number").val() != 1 ) {
+        $("#page-number").val($("#page-number").val() - 1);
+      }
+  
+      // Delete the comment with this id.
+      deleteComments(comment.id);
+    });
 
-    // Delete the comment with this id.
-    deleteComments(comment.id);
-  });
+    // Add delete button to the column.
+    columnDelete.append(deleteButton);
+  }
+  else {
 
-  // Create the paragraphs that the comment and author go in.
+    // Create a column for the comment info and do not create a button.
+    columnContent.className = "column-80";
+  }
+
+  // Create the paragraphs that the comment and author go in and add to the content column.
   const contentElement = document.createElement("p");
   contentElement.innerText = comment.content;
   const authorElement = document.createElement("p");
   authorElement.innerText = "- " + comment.author;
-
-  // Append all elements to the larger elements they exist in.
-  columnDelete.append(deleteButton);
   columnContent.appendChild(contentElement);
   columnContent.appendChild(authorElement);
+
+  // Append all columns to the row they exist in.
+  row.appendChild(columnIcon);
   row.appendChild(columnContent);
-  row.appendChild(columnDelete);
+  if (comment.author == userName) {
+    row.appendChild(columnDelete);
+  }
+
+  // Add the row to comment element and return.
   commentElement.appendChild(row);
   return commentElement;
 }
