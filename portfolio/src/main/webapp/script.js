@@ -71,6 +71,8 @@ function getComments() {
   // Make get request to get commentCount number of comments.
   $.get("/data", { count: countEntry, page: pageEntry }, function(data, textStatus, jqXHR) {
 
+    console.log(data);
+    
     // Empty the list that will receive the comments.
     const commentList = document.getElementById("comment-list");
     commentList.innerHTML="";

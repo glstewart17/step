@@ -24,10 +24,12 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.CommentResult;
+import com.google.sps.data.User;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +61,8 @@ public class DataServlet extends HttpServlet {
         (long) entity.getKey().getId(),  
         (String) entity.getProperty("content"), 
         (String) entity.getProperty("author"), 
-        (long) entity.getProperty("timestamp"));
+        (long) entity.getProperty("timestamp"),
+        (String) entity.getProperty("image"));
       comments.add(comment);
     }
 
@@ -77,6 +80,8 @@ public class DataServlet extends HttpServlet {
     String url;
     if (userService.isUserLoggedIn()) {
       id = userService.getCurrentUser().getUserId();
+      User currentUser = getUserInfo(id);
+      id = currentUser.getName();
       url = userService.createLogoutURL("/index.html");
     } else {
       url = userService.createLoginURL("/index.html");
@@ -96,15 +101,50 @@ public class DataServlet extends HttpServlet {
     
     UserService userService = UserServiceFactory.getUserService();
     String content = request.getParameter("content");
-    String author = userService.getCurrentUser().getUserId();
+    String id = userService.getCurrentUser().getUserId();
+    User currentUser = getUserInfo(id);
     long timestamp = System.currentTimeMillis();
 
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("content", content);
-    commentEntity.setProperty("author", author);
+    commentEntity.setProperty("author", currentUser.getName());
+    commentEntity.setProperty("image", currentUser.getImage());
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+  }
+
+  /**
+   * Returns the nickname of the user with id, if one doesn't exist, create a default account.
+   */
+  private User getUserInfo(String id) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+      new Query("User")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      Entity userEntity = new Entity("User", id);
+      userEntity.setProperty("id", id);
+      
+
+      Random rand = new Random();
+      int number = rand.nextInt(9000) + 1000;
+      String name = "User" + Integer.toString(number);
+      userEntity.setProperty("name", name);
+      
+      String image = "images/default.png";
+      userEntity.setProperty("image", image);
+
+      // The put() function automatically inserts new data or updates existing data based on ID
+      datastore.put(userEntity);
+      System.out.println("New user created");
+      return new User(id, name, image);
+    }
+    String name = (String) entity.getProperty("name");
+    String image = (String) entity.getProperty("image");
+    return new User(id, name, image);
   }
 }
