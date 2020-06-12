@@ -28,57 +28,46 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that handles the updating of user account. */
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String id = userService.getCurrentUser().getUserId();
-      response.getWriter().println(id);
-    } else {
-      String loginUrl = userService.createLoginURL("/index.html");
-      response.getWriter().println(loginUrl);
-    }
-  }
-
+  /**
+   * For a post request, get user entity and update the filled out fields.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    // Set up userService and datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
+    
     if (!userService.isUserLoggedIn()) {
-      response.sendRedirect("/nickname");
+      response.setContentType("text/html");
+      response.getWriter().println("error");
       return;
     }
 
-    String nickname = request.getParameter("nickname");
     String id = userService.getCurrentUser().getUserId();
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity entity = new Entity("UserInfo", id);
-    entity.setProperty("id", id);
-    entity.setProperty("nickname", nickname);
-    // The put() function automatically inserts new data or updates existing data based on ID
-    datastore.put(entity);
-
-    response.sendRedirect("/home");
-  }
-
-  /**
-   * Returns the nickname of the user with id, or empty String if the user has not set a nickname.
-   */
-  private String getUserNickname(String id) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query =
-        new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+      new Query("User")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return "";
+
+    String name = request.getParameter("name");
+    if (name != null) {
+        entity.setProperty("name", name);
     }
-    String nickname = (String) entity.getProperty("nickname");
-    return nickname;
+
+    String image = request.getParameter("image");
+    if (image != null) {
+        entity.setProperty("image", image);
+    }
+
+    // The put() function automatically inserts new data or updates existing data based on ID
+    datastore.put(entity);
+    response.setContentType("text/html");
+    response.getWriter().println("Success");
   }
 }

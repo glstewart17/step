@@ -194,6 +194,10 @@ button:hover {
   border-bottom:1px solid #bbb;
 }
 
+.form-top {
+  border-top:1px solid #bbb;
+}
+
 .form-last {
   border-bottom: none;
   align-content: center;

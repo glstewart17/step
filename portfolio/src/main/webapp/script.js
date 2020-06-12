@@ -232,12 +232,15 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
-  $("#upload-file").click(function() {
+  $("#update-file").click(function() {
     filePost();
+  });
+  $("#update-name").click(function() {
+    updateName();
   });
 
   // Disable file submission button initially.
-  $("#upload-file").prop("disabled", true);
+  $("#update-file").prop("disabled", true);
 });
 
 /**
@@ -247,8 +250,9 @@ function fetchBlobstoreUrlAndEnableButton() {
   fetch('/blobstore-upload-url').then((response) => {
     return response.text();
   }).then((imageUploadUrl) => {
-    $("#upload-file").val(imageUploadUrl);
-    $("#upload-file").prop("disabled", false);
+    console.log(imageUploadUrl);
+    $("#update-file").val(imageUploadUrl);
+    $("#update-file").prop("disabled", false);
   });
 }
 
@@ -262,22 +266,25 @@ function filePost() {
   data.append("file", $("#file").prop("files")[0]);
 
   // Disable the button and empty the result div.
-  $("#upload-file").prop("disabled", true);
+  $("#update-file").prop("disabled", true);
   const resultDiv = document.getElementById("result");
   resultDiv.innerHTML="";
+
+  console.log($("#file").prop("files")[0]);
+  console.log($("#update-file").val());
 
   // Post the file to the blobstore URL.
   $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
-    url: $("#upload-file").val(),
+    url: $("#update-file").val(),
     data: data,
     processData: false,
     contentType: false,
     cache: false,
     timeout: 600000,
     success: function(data, status, jqXHR) {
-      
+      console.log("succes");
       // Create a p with the success message and add it to to the page.
       const message = document.createElement("p");
       message.innerText = "Your image has been stored.";
@@ -296,9 +303,10 @@ function filePost() {
 
       // Fetch another blobstore URL and enable the submit button.
       fetchBlobstoreUrlAndEnableButton();
+      updateFile(data);
     },
     error: function(error) {
-
+      console.log("ERRORS");
       // Create a p with the error message and add it to to the page.
       const message = document.createElement("p");
       message.innerText = error.responseText;
@@ -309,6 +317,7 @@ function filePost() {
       
       // Fetch another blobstore URL and enable the submit button.
       fetchBlobstoreUrlAndEnableButton();
+      return null;
     }
   });
 };
@@ -388,4 +397,31 @@ function showForms(user) {
     $("#update-user-form").css({"display":"unset"});
     $("#comment-form").css({"display":"unset"});
   }
+}
+
+function updateFile(image) {
+  
+  if (image == null) {
+    console.log("failure");
+    return;
+  };
+
+  // Make post request to submit new comment and get comments after.
+  $.post("/user", { image: image } );
+  getComments();
+}
+
+function updateName() {
+  
+  let name = $("#name").val();
+
+  // If a field is empty, alert the user and do not post.
+  if (name === "") {
+    alert("Name must be filled before submission.");
+    return;
+  }
+
+  // Make post request to submit new comment and get comments after.
+  $.post("/user", { name: name } );
+  getComments();
 }

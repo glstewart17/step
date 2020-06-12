@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="script.js"></script>
   </head>
-  <body onload="showSlide(); getComments();">
+  <body onload="showSlide(); getComments(); fetchBlobstoreUrlAndEnableButton();">
     <div id="page">
       <div class="top-navigation">
         <a class="active" href="index.html">Home</a>
@@ -136,18 +136,33 @@
                 </div>
               </div>
             </div>
-            <div id="login-form" class="form">
+            <div class="form-last">
+              <div class="row">
+                <button id="delete-all" class="delete">Delete All Comments</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>User Information</h2>
+        <div class="slideshow">
+          <div class="slideshow-subtitle">
+            <div id="login-form">
             </div>
             <div id="update-user-form">
-              <div class="form">
+              <div class="form-top">
                 <div class="row">
                   <div class="column-20">
-                    <label for="new-user-name">Update Name</label>
+                    <label for="name">Update Name</label>
                   </div>
                   <div class="column-80">
-                    <input type="text" id="new-user-name" name="new-user-name" placeholder="New user name..."/>
+                    <input type="text" id="name" name="name" placeholder="New user name..."/>
                   </div>
                 </div>
+                <div class="row">
+                  <button value="Submit" id="update-name">Submit</button>
+                </div>
+              </div>
+              <div class="form-top">
                 <div class="row">
                   <div class="column-20">
                     <label for="File">Update Icon</label>
@@ -157,13 +172,13 @@
                   </div>
                 </div>
                 <div class="row">
-                  <button value="Submit" id="upload-file">Submit</button>
+                  <button value="Submit" id="update-file">Submit</button>
                 </div>
               </div>
-            </div>
-            <div class="form-last">
-              <div class="row">
-                <button id="delete-all" class="delete">Delete All Comments</button>
+              <div id="result" class="form-top">
+                <div class="row">
+                  <p>Choose a file and submit
+                </div>
               </div>
             </div>
           </div>

@@ -129,7 +129,6 @@ public class DataServlet extends HttpServlet {
       Entity userEntity = new Entity("User", id);
       userEntity.setProperty("id", id);
       
-
       Random rand = new Random();
       int number = rand.nextInt(9000) + 1000;
       String name = "User" + Integer.toString(number);

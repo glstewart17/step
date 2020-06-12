@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-/** Class containing the author, content, and timestamp of a comment. */
+/** Class containing the id, name, and image of a user. */
 public final class User {
 
   private final String id;
