@@ -38,16 +38,18 @@ public class UserServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    // Set up userService and datastore.
+    // Set up user service and datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
     
+    // If the user is not logged it, return error response. 
     if (!userService.isUserLoggedIn()) {
       response.setContentType("text/html");
-      response.getWriter().println("error");
+      response.getWriter().println("User not logged in.");
       return;
     }
 
+    // Get user id and use it to get the user's entity from datastore.
     String id = userService.getCurrentUser().getUserId();
     Query query =
       new Query("User")
@@ -55,19 +57,21 @@ public class UserServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
 
+    // If name field is not null, change name.
     String name = request.getParameter("name");
     if (name != null) {
         entity.setProperty("name", name);
     }
 
+    // If image field is not null, change image.
     String image = request.getParameter("image");
     if (image != null) {
         entity.setProperty("image", image);
     }
 
-    // The put() function automatically inserts new data or updates existing data based on ID
+    // Store the entity, it will update existing, and return success.
     datastore.put(entity);
     response.setContentType("text/html");
-    response.getWriter().println("Success");
+    response.getWriter().println("User has been updated.");
   }
 }

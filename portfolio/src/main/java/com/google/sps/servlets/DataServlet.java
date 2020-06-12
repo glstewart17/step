@@ -74,14 +74,15 @@ public class DataServlet extends HttpServlet {
       comments = comments.subList((pageNumber - 1) * commentsPerPage, pageNumber * commentsPerPage);
     }
 
-    // If user logged in, find id and get logout url, otherwise find login url.
+    // If user logged in, find name and image, and get logout url, otherwise get login url.
     UserService userService = UserServiceFactory.getUserService();
-    String id = "";
+    String name = "";
+    String image = "";
     String url;
     if (userService.isUserLoggedIn()) {
-      id = userService.getCurrentUser().getUserId();
-      User currentUser = getUserInfo(id);
-      id = currentUser.getName();
+      User user = getUserInfo(userService.getCurrentUser().getUserId());
+      name = user.getName();
+      image = user.getImage();
       url = userService.createLogoutURL("/index.html");
     } else {
       url = userService.createLoginURL("/index.html");
@@ -90,7 +91,7 @@ public class DataServlet extends HttpServlet {
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, id, url)));
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, name, image, url)));
   }
 
   /**
@@ -101,8 +102,7 @@ public class DataServlet extends HttpServlet {
     
     UserService userService = UserServiceFactory.getUserService();
     String content = request.getParameter("content");
-    String id = userService.getCurrentUser().getUserId();
-    User currentUser = getUserInfo(id);
+    User currentUser = getUserInfo(userService.getCurrentUser().getUserId());
     long timestamp = System.currentTimeMillis();
 
     Entity commentEntity = new Entity("Comment");
@@ -116,15 +116,21 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Returns the nickname of the user with id, if one doesn't exist, create a default account.
+   * Returns the nickname of the user from id, if one doesn't exist, create a default account.
    */
   private User getUserInfo(String id) {
+
+    // Set up datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
+    // Get entity of the user based on id.
     Query query =
       new Query("User")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
+    
+    // If user not in datastore, create new user.
     if (entity == null) {
       Entity userEntity = new Entity("User", id);
       userEntity.setProperty("id", id);
@@ -137,11 +143,12 @@ public class DataServlet extends HttpServlet {
       String image = "images/default.png";
       userEntity.setProperty("image", image);
 
-      // The put() function automatically inserts new data or updates existing data based on ID
+      // Store the entity, return new user.
       datastore.put(userEntity);
-      System.out.println("New user created");
       return new User(id, name, image);
     }
+
+    // Otherwise, return the existing user.
     String name = (String) entity.getProperty("name");
     String image = (String) entity.getProperty("image");
     return new User(id, name, image);
