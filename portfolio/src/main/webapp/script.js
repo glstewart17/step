@@ -95,8 +95,7 @@ function getComments() {
     $("#page-number").val(pageEntry);
 
     // Handle login status.
-    showForms(data.userName);
-    checkLogin(data.userName, data.url);
+    checkLogin(data.userName, data.userImage, data.url);
   }).catch((error) => {
     console.log(error)
   });
@@ -232,15 +231,15 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
-  $("#update-file").click(function() {
-    filePost();
+  $("#update-image").click(function() {
+    updateImage();
   });
   $("#update-name").click(function() {
     updateName();
   });
 
   // Disable file submission button initially.
-  $("#update-file").prop("disabled", true);
+  $("#update-image").prop("disabled", true);
 });
 
 /**
@@ -250,84 +249,60 @@ function fetchBlobstoreUrlAndEnableButton() {
   fetch('/blobstore-upload-url').then((response) => {
     return response.text();
   }).then((imageUploadUrl) => {
-    console.log(imageUploadUrl);
-    $("#update-file").val(imageUploadUrl);
-    $("#update-file").prop("disabled", false);
+    $("#update-image").val(imageUploadUrl);
+    $("#update-image").prop("disabled", false);
   });
 }
 
 /**
  * Add a comment using the author and content field.
  */
-function filePost() {
+function updateImage() {
 
   // Create a FormData object and add the file.
   var data = new FormData();
   data.append("file", $("#file").prop("files")[0]);
 
-  // Disable the button and empty the result div.
-  $("#update-file").prop("disabled", true);
-  const resultDiv = document.getElementById("result");
-  resultDiv.innerHTML="";
-
-  console.log($("#file").prop("files")[0]);
-  console.log($("#update-file").val());
+  // Disable the image submit button and empty the result div.
+  $("#update-image").prop("disabled", true);
 
   // Post the file to the blobstore URL.
   $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
-    url: $("#update-file").val(),
+    url: $("#update-image").val(),
     data: data,
     processData: false,
     contentType: false,
     cache: false,
     timeout: 600000,
     success: function(data, status, jqXHR) {
-      console.log("succes");
-      // Create a p with the success message and add it to to the page.
-      const message = document.createElement("p");
-      message.innerText = "Your image has been stored.";
-      const row1 = document.createElement("div");
-      row1.className = "row";
-      row1.appendChild(message);
-      resultDiv.appendChild(row1);
-      
-      // Create an img to display the img and add it to to the page.
-      const img = document.createElement("img");
-      img.src = data;
-      const row2 = document.createElement("div");
-      row2.className = "row";
-      row2.appendChild(img);    
-      resultDiv.appendChild(row2);
 
-      // Fetch another blobstore URL and enable the submit button.
+      // Make post request to submit new comment and update page after.
+      $.post("/user", { image: data } );
       fetchBlobstoreUrlAndEnableButton();
-      updateFile(data);
+      getComments();
     },
     error: function(error) {
-      console.log("ERRORS");
-      // Create a p with the error message and add it to to the page.
-      const message = document.createElement("p");
-      message.innerText = error.responseText;
-      const row = document.createElement("div");
-      row.className = "row";
-      row.appendChild(message);
-      resultDiv.appendChild(row);
       
-      // Fetch another blobstore URL and enable the submit button.
+      // Fetch another blobstore URL and enable the submit button, and log error.
       fetchBlobstoreUrlAndEnableButton();
-      return null;
+      console.log(error.responseText);
     }
   });
 };
 
-
-function checkLogin(id, url) {
+/**
+ * Check if user is logged in and provide the correct forms.
+ */
+function checkLogin(userName, userimage, url) {
   
+  // Get and empty the login div.
   const loginDiv = document.getElementById("login-form");
   loginDiv.innerHTML="";
-  if (id == "") {
+
+  // If no userName, setup for login, otherwise setup forms and logout.
+  if (userName == "") {
 
     // Create the row, which will hold the columns in the same row.
     const row = document.createElement("div");
@@ -363,59 +338,69 @@ function checkLogin(id, url) {
     row.className = "row";
 
     // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+    const columnIcon = document.createElement("div");
+    columnIcon.className = "column-20";
     const columnLabel = document.createElement("div");
-    columnLabel.className = "column-80";
-    const columnLogin = document.createElement("div");
-    columnLogin.className = "column-20";
+    columnLabel.className = "column-60";
+    const columnLogout = document.createElement("div");
+    columnLogout.className = "column-20";
 
-    // Remove the comment and call to delete when the button is pressed.
+    // Create a div and image for icon and append them to the icon column.
+    const iconDiv = document.createElement("div");
+    iconDiv.className = "icon";
+    const img = document.createElement("img");
+    img.src = userimage;
+    iconDiv.appendChild(img);
+    columnIcon.appendChild(iconDiv);
+
+    // Create a logout button with a function and add to the logout column.
     const logoutButton = document.createElement("button");
     logoutButton.className = "login"
     logoutButton.innerText = "Logout";
     logoutButton.addEventListener("click", () => {
       window.location.href=url;
     });
-
+    columnLogout.append(logoutButton);
+    
+    // Create a user name label and add to the label column 
     const message = document.createElement("label");
-    message.innerText = "Signed in as: " + id;
-
-    columnLogin.append(logoutButton);
+    message.innerText = "User: " + userName;
     columnLabel.appendChild(message);
+
+    // Append all labels to the row and add row to the login div.
+    row.appendChild(columnIcon);
     row.appendChild(columnLabel);
-    row.appendChild(columnLogin);
+    row.appendChild(columnLogout);
     loginDiv.appendChild(row);
+
+    // Show the user forms.
+    showForms();
   }
 }
 
+/**
+ * Hide the user forms.
+ */
 function hideForms() {
   $("#update-user-form").css({"display":"none"});
   $("#comment-form").css({"display":"none"});
 }
 
-function showForms(user) {
-  if (user != "") {
-    $("#update-user-form").css({"display":"unset"});
-    $("#comment-form").css({"display":"unset"});
-  }
+/**
+ * Show user forms, if there is a user.
+ */
+function showForms() {
+  $("#update-user-form").css({"display":"unset"});
+  $("#comment-form").css({"display":"unset"});
 }
 
-function updateFile(image) {
-  
-  if (image == null) {
-    console.log("failure");
-    return;
-  };
-
-  // Make post request to submit new comment and get comments after.
-  $.post("/user", { image: image } );
-  getComments();
-}
-
+/**
+ * Change the user's name and update comments.
+ */
 function updateName() {
   
+  // Get name, alert user if the field is empty.
   let name = $("#name").val();
-
-  // If a field is empty, alert the user and do not post.
   if (name === "") {
     alert("Name must be filled before submission.");
     return;

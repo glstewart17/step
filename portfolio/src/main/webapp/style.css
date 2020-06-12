@@ -222,6 +222,8 @@ button:hover {
   border-radius: 50%;
   position: relative;
   overflow: hidden;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .icon img {
