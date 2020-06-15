@@ -66,7 +66,7 @@ public class UserServlet extends HttpServlet {
     // If image field is not null, change image.
     String image = request.getParameter("image");
     if (image != null) {
-        entity.setProperty("image", image);
+        entity.setProperty("imageUrl", image);
     }
 
     // Store the entity, it will update existing, and return success.

@@ -29,7 +29,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +61,7 @@ public class DataServlet extends HttpServlet {
         (String) entity.getProperty("content"), 
         (String) entity.getProperty("author"), 
         (long) entity.getProperty("timestamp"),
-        (String) entity.getProperty("image"));
+        (String) entity.getProperty("imageUrl"));
       comments.add(comment);
     }
 
@@ -77,12 +76,12 @@ public class DataServlet extends HttpServlet {
     // If user logged in, find name and image, and get logout url, otherwise get login url.
     UserService userService = UserServiceFactory.getUserService();
     String name = "";
-    String image = "";
+    String imageUrl = "";
     String url;
     if (userService.isUserLoggedIn()) {
       User user = getUserInfo(userService.getCurrentUser().getUserId());
       name = user.getName();
-      image = user.getImage();
+      imageUrl = user.getImageUrl();
       url = userService.createLogoutURL("/index.html");
     } else {
       url = userService.createLoginURL("/index.html");
@@ -91,7 +90,7 @@ public class DataServlet extends HttpServlet {
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, name, image, url)));
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, name, imageUrl, url)));
   }
 
   /**
@@ -109,7 +108,7 @@ public class DataServlet extends HttpServlet {
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("content", content);
     commentEntity.setProperty("author", currentUser.getName());
-    commentEntity.setProperty("image", currentUser.getImage());
+    commentEntity.setProperty("imageUrl", currentUser.getImageUrl());
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
@@ -135,22 +134,20 @@ public class DataServlet extends HttpServlet {
       Entity userEntity = new Entity("User", id);
       userEntity.setProperty("id", id);
       
-      Random rand = new Random();
-      int number = rand.nextInt(9000) + 1000;
-      String name = "User" + Integer.toString(number);
+      String name = "User" + id;
       userEntity.setProperty("name", name);
       
-      String image = "images/default.png";
-      userEntity.setProperty("image", image);
+      String imageUrl = "images/default.png";
+      userEntity.setProperty("imageUrl", imageUrl);
 
       // Store the entity, return new user.
       datastore.put(userEntity);
-      return new User(id, name, image);
+      return new User(id, name, imageUrl);
     }
 
     // Otherwise, return the existing user.
     String name = (String) entity.getProperty("name");
-    String image = (String) entity.getProperty("image");
-    return new User(id, name, image);
+    String imageUrl = (String) entity.getProperty("imageUrl");
+    return new User(id, name, imageUrl);
   }
 }

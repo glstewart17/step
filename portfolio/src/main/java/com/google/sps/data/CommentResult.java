@@ -24,14 +24,14 @@ public final class CommentResult {
   private final List<Comment> comments;
   private final int commentCount;
   private final String userName;
-  private final String userImage;
+  private final String userImageUrl;
   private final String url;
 
-  public CommentResult(List<Comment> comments, int commentCount, String userName, String userImage, String url) {
+  public CommentResult(List<Comment> comments, int commentCount, String userName, String userImageUrl, String url) {
     this.comments = comments;
     this.commentCount = commentCount;
     this.userName = userName;
-    this.userImage = userImage;
+    this.userImageUrl = userImageUrl;
     this.url = url;
   }
 }

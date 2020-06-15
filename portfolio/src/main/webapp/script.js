@@ -95,7 +95,7 @@ function getComments() {
     $("#page-number").val(pageEntry);
 
     // Handle login status.
-    checkLogin(data.userName, data.userImage, data.url);
+    checkLogin(data.userName, data.userImageUrl, data.url);
   }).catch((error) => {
     console.log(error)
   });
@@ -119,7 +119,7 @@ function createCommentElement(comment, userName) {
   const iconDiv = document.createElement("div");
   iconDiv.className = "icon";
   const img = document.createElement("img");
-  img.src = comment.image;
+  img.src = comment.imageUrl;
   iconDiv.appendChild(img);
   columnIcon.appendChild(iconDiv);
 
@@ -295,7 +295,7 @@ function updateImage() {
 /**
  * Check if user is logged in and provide the correct forms.
  */
-function checkLogin(userName, userimage, url) {
+function checkLogin(userName, userImage, url) {
   
   // Get and empty the login div.
   const loginDiv = document.getElementById("login-form");
@@ -349,7 +349,7 @@ function checkLogin(userName, userimage, url) {
     const iconDiv = document.createElement("div");
     iconDiv.className = "icon";
     const img = document.createElement("img");
-    img.src = userimage;
+    img.src = userImage;
     iconDiv.appendChild(img);
     columnIcon.appendChild(iconDiv);
 

@@ -14,21 +14,21 @@
 
 package com.google.sps.data;
 
-/** Class containing the author, content, timestamp, and image of a comment. */
+/** Class containing the author, content, timestamp, and image URL of a comment. */
 public final class Comment {
 
   private final long id;
   private final String content;
   private final String author;
   private final long timestamp;
-  private final String image;
+  private final String imageUrl;
 
-  public Comment(long id, String content, String author, long timestamp, String image) {
+  public Comment(long id, String content, String author, long timestamp, String imageUrl) {
     this.id = id;
     this.content = content;
     this.author = author;
     this.timestamp = timestamp;
-    this.image = image;
+    this.imageUrl = imageUrl;
   }
 
   public String getContent() {
@@ -47,7 +47,7 @@ public final class Comment {
       return timestamp;
   }
 
-  public String getImage() {
-    return image;
+  public String getImageUrl() {
+    return imageUrl;
   }
 }

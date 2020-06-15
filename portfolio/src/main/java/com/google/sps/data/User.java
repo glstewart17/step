@@ -14,25 +14,25 @@
 
 package com.google.sps.data;
 
-/** Class containing the id, name, and image of a user. */
+/** Class containing the id, name, and image URL of a user. */
 public final class User {
 
   private final String id;
   private final String name;
-  private final String image;
+  private final String imageUrl;
 
-  public User(String id, String name, String image) {
+  public User(String id, String name, String imageUrl) {
     this.id = id;
     this.name = name;
-    this.image = image;
+    this.imageUrl = imageUrl;
   }
 
   public String getName() {
     return name;
   }
 
-  public String getImage() {
-    return image;
+  public String getImageUrl() {
+    return imageUrl;
   }
 
   public String getId() {
