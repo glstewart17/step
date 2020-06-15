@@ -66,6 +66,8 @@ function getComments() {
   const countEntry = $("#comment-count").val();
   const pageEntry = $("#page-number").val();
 
+  hideForms();
+
   // Make get request to get commentCount number of comments.
   $.get("/data", { count: countEntry, page: pageEntry }, function(data, textStatus, jqXHR) {
 
@@ -75,7 +77,7 @@ function getComments() {
 
     // For each comment, create and append a list element.
     data.comments.forEach((comment) => {
-      commentList.appendChild(createCommentElement(comment));
+      commentList.appendChild(createCommentElement(comment, data.userName));
     })
     
     // Create new page number options based on new get comments.
@@ -91,6 +93,9 @@ function getComments() {
 
     // Restore old page number option.
     $("#page-number").val(pageEntry);
+
+    // Handle login status.
+    checkLogin(data.userName, data.userImageUrl, data.url);
   }).catch((error) => {
     console.log(error)
   });
@@ -99,8 +104,8 @@ function getComments() {
 /**
  * Creates a list element that represents each comment.
  */ 
-function createCommentElement(comment) {
-  
+function createCommentElement(comment, userName) {
+
   // Create a commentElement that will be placed in commentList. 
   const commentElement = document.createElement("li");
 
@@ -108,39 +113,66 @@ function createCommentElement(comment) {
   const row = document.createElement("div");
   row.className = "row";
 
-  // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+  // Create a column for the icon div and icon of the author.
+  const columnIcon = document.createElement("div");
+  columnIcon.className = "column-20";
+  const iconDiv = document.createElement("div");
+  iconDiv.className = "icon";
+  const img = document.createElement("img");
+  img.src = comment.imageUrl;
+  iconDiv.appendChild(img);
+  columnIcon.appendChild(iconDiv);
+
+  // Create a column for content and a delete button, which will take up 80% of the row.
   const columnContent = document.createElement("div");
-  columnContent.className = "column-80";
   const columnDelete = document.createElement("div");
-  columnDelete.className = "column-20";
 
-  // Remove the comment and call to delete when the button is pressed.
-  const deleteButton = document.createElement("button");
-  deleteButton.className = "delete"
-  deleteButton.innerText = "Delete";
-  deleteButton.addEventListener("click", () => {
+  if (comment.author == userName) {
+
+    // Split the reamain percent of the row and assign classes.
+    columnContent.className = "column-60";
+    columnDelete.className = "column-20";
+
+    // Remove the comment and call to delete when the button is pressed.
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "delete"
+    deleteButton.innerText = "Delete";
+    deleteButton.addEventListener("click", () => {
     
-    // If only one element, go to the previous page, if not 1.
-    if ($("#comment-list").children().length == 1 && $("#page-number").val() != 1 ) {
-      $("#page-number").val($("#page-number").val() - 1);
-    }
+      // If only one element, go to the previous page, if not 1.
+      if ($("#comment-list").children().length == 1 && $("#page-number").val() != 1 ) {
+        $("#page-number").val($("#page-number").val() - 1);
+      }
+  
+      // Delete the comment with this id.
+      deleteComments(comment.id);
+    });
 
-    // Delete the comment with this id.
-    deleteComments(comment.id);
-  });
+    // Add delete button to the column.
+    columnDelete.append(deleteButton);
+  }
+  else {
 
-  // Create the paragraphs that the comment and author go in.
+    // Create a column for the comment info and do not create a button.
+    columnContent.className = "column-80";
+  }
+
+  // Create the paragraphs that the comment and author go in and add to the content column.
   const contentElement = document.createElement("p");
   contentElement.innerText = comment.content;
   const authorElement = document.createElement("p");
   authorElement.innerText = "- " + comment.author;
-
-  // Append all elements to the larger elements they exist in.
-  columnDelete.append(deleteButton);
   columnContent.appendChild(contentElement);
   columnContent.appendChild(authorElement);
+
+  // Append all columns to the row they exist in.
+  row.appendChild(columnIcon);
   row.appendChild(columnContent);
-  row.appendChild(columnDelete);
+  if (comment.author == userName) {
+    row.appendChild(columnDelete);
+  }
+
+  // Add the row to comment element and return.
   commentElement.appendChild(row);
   return commentElement;
 }
@@ -149,17 +181,16 @@ function createCommentElement(comment) {
  * Add a comment using the author and content field.
  */
 function addComment() {
-  let author = $("#comment-author").val();
   let content = $("#comment-content").val();
 
   // If a field is empty, alert the user and do not post.
-  if (author === "" || content === "") {
+  if (content === "") {
     alert("All fields must be filled before submission.");
     return;
   }
 
   // Make post request to submit new comment and get comments after.
-  $.post("/data", { author: author, content: content } );
+  $.post("/data", { content: content } );
   getComments();
 };
 
@@ -200,12 +231,15 @@ $(document).ready(function() {
   $("#page-number").change(function() {
     getComments();
   });
-  $("#upload-file").click(function() {
-    filePost();
+  $("#update-image").click(function() {
+    updateImage();
+  });
+  $("#update-name").click(function() {
+    updateName();
   });
 
   // Disable file submission button initially.
-  $("#upload-file").prop("disabled", true);
+  $("#update-image").prop("disabled", true);
 });
 
 /**
@@ -215,68 +249,164 @@ function fetchBlobstoreUrlAndEnableButton() {
   fetch('/blobstore-upload-url').then((response) => {
     return response.text();
   }).then((imageUploadUrl) => {
-    $("#upload-file").val(imageUploadUrl);
-    $("#upload-file").prop("disabled", false);
+    $("#update-image").val(imageUploadUrl);
+    $("#update-image").prop("disabled", false);
   });
 }
 
 /**
  * Add a comment using the author and content field.
  */
-function filePost() {
+function updateImage() {
 
   // Create a FormData object and add the file.
   var data = new FormData();
   data.append("file", $("#file").prop("files")[0]);
 
-  // Disable the button and empty the result div.
-  $("#upload-file").prop("disabled", true);
-  const resultDiv = document.getElementById("result");
-  resultDiv.innerHTML="";
+  // Disable the image submit button and empty the result div.
+  $("#update-image").prop("disabled", true);
 
   // Post the file to the blobstore URL.
   $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
-    url: $("#upload-file").val(),
+    url: $("#update-image").val(),
     data: data,
     processData: false,
     contentType: false,
     cache: false,
     timeout: 600000,
     success: function(data, status, jqXHR) {
-      
-      // Create a p with the success message and add it to to the page.
-      const message = document.createElement("p");
-      message.innerText = "Your image has been stored.";
-      const row1 = document.createElement("div");
-      row1.className = "row";
-      row1.appendChild(message);
-      resultDiv.appendChild(row1);
-      
-      // Create an img to display the img and add it to to the page.
-      const img = document.createElement("img");
-      img.src = data;
-      const row2 = document.createElement("div");
-      row2.className = "row";
-      row2.appendChild(img);    
-      resultDiv.appendChild(row2);
 
-      // Fetch another blobstore URL and enable the submit button.
+      // Make post request to submit new comment and update page after.
+      $.post("/user", { image: data } );
       fetchBlobstoreUrlAndEnableButton();
+      getComments();
     },
     error: function(error) {
-
-      // Create a p with the error message and add it to to the page.
-      const message = document.createElement("p");
-      message.innerText = error.responseText;
-      const row = document.createElement("div");
-      row.className = "row";
-      row.appendChild(message);
-      resultDiv.appendChild(row);
       
-      // Fetch another blobstore URL and enable the submit button.
+      // Fetch another blobstore URL and enable the submit button, and log error.
       fetchBlobstoreUrlAndEnableButton();
+      console.log(error.responseText);
     }
   });
 };
+
+/**
+ * Check if user is logged in and provide the correct forms.
+ */
+function checkLogin(userName, userImage, url) {
+  
+  // Get and empty the login div.
+  const loginDiv = document.getElementById("login-form");
+  loginDiv.innerHTML="";
+
+  // If no userName, setup for login, otherwise setup forms and logout.
+  if (userName == "") {
+
+    // Create the row, which will hold the columns in the same row.
+    const row = document.createElement("div");
+    row.className = "row";
+
+    // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+    const columnLabel = document.createElement("div");
+    columnLabel.className = "column-80";
+    const columnLogin = document.createElement("div");
+    columnLogin.className = "column-20";
+
+    // Remove the comment and call to delete when the button is pressed.
+    const loginButton = document.createElement("button");
+    loginButton.className = "login"
+    loginButton.innerText = "Login";
+    loginButton.addEventListener("click", () => {
+    window.location.href=url;
+    });
+
+    const message = document.createElement("label");
+    message.innerText = "Login to comment";
+
+    columnLogin.append(loginButton);
+    columnLabel.appendChild(message);
+    row.appendChild(columnLabel);
+    row.appendChild(columnLogin);
+    loginDiv.appendChild(row);
+  }
+  else {
+
+    // Create the row, which will hold the columns in the same row.
+    const row = document.createElement("div");
+    row.className = "row";
+
+    // Make the columns that will hold the comments and button, taking 80% and 20% of the row.
+    const columnIcon = document.createElement("div");
+    columnIcon.className = "column-20";
+    const columnLabel = document.createElement("div");
+    columnLabel.className = "column-60";
+    const columnLogout = document.createElement("div");
+    columnLogout.className = "column-20";
+
+    // Create a div and image for icon and append them to the icon column.
+    const iconDiv = document.createElement("div");
+    iconDiv.className = "icon";
+    const img = document.createElement("img");
+    img.src = userImage;
+    iconDiv.appendChild(img);
+    columnIcon.appendChild(iconDiv);
+
+    // Create a logout button with a function and add to the logout column.
+    const logoutButton = document.createElement("button");
+    logoutButton.className = "login"
+    logoutButton.innerText = "Logout";
+    logoutButton.addEventListener("click", () => {
+      window.location.href=url;
+    });
+    columnLogout.append(logoutButton);
+    
+    // Create a user name label and add to the label column 
+    const message = document.createElement("label");
+    message.innerText = "User: " + userName;
+    columnLabel.appendChild(message);
+
+    // Append all labels to the row and add row to the login div.
+    row.appendChild(columnIcon);
+    row.appendChild(columnLabel);
+    row.appendChild(columnLogout);
+    loginDiv.appendChild(row);
+
+    // Show the user forms.
+    showForms();
+  }
+}
+
+/**
+ * Hide the user forms.
+ */
+function hideForms() {
+  $("#update-user-form").css({"display":"none"});
+  $("#comment-form").css({"display":"none"});
+}
+
+/**
+ * Show user forms, if there is a user.
+ */
+function showForms() {
+  $("#update-user-form").css({"display":"unset"});
+  $("#comment-form").css({"display":"unset"});
+}
+
+/**
+ * Change the user's name and update comments.
+ */
+function updateName() {
+  
+  // Get name, alert user if the field is empty.
+  let name = $("#name").val();
+  if (name === "") {
+    alert("Name must be filled before submission.");
+    return;
+  }
+
+  // Make post request to submit new comment and get comments after.
+  $.post("/user", { name: name } );
+  getComments();
+}

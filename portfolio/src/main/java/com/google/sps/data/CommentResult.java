@@ -18,14 +18,20 @@ import com.google.sps.data.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Class containing a list of the comments being returned and the number of comments in datastore. */
+/** Class containing a list of the comments, the total number of comments, and user info. */
 public final class CommentResult {
 
   private final List<Comment> comments;
   private final int commentCount;
+  private final String userName;
+  private final String userImageUrl;
+  private final String url;
 
-  public CommentResult(List<Comment> comments, int commentCount) {
+  public CommentResult(List<Comment> comments, int commentCount, String userName, String userImageUrl, String url) {
     this.comments = comments;
     this.commentCount = commentCount;
+    this.userName = userName;
+    this.userImageUrl = userImageUrl;
+    this.url = url;
   }
 }

@@ -20,8 +20,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.CommentResult;
+import com.google.sps.data.User;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +60,8 @@ public class DataServlet extends HttpServlet {
         (long) entity.getKey().getId(),  
         (String) entity.getProperty("content"), 
         (String) entity.getProperty("author"), 
-        (long) entity.getProperty("timestamp"));
+        (long) entity.getProperty("timestamp"),
+        (String) entity.getProperty("imageUrl"));
       comments.add(comment);
     }
 
@@ -69,10 +73,24 @@ public class DataServlet extends HttpServlet {
       comments = comments.subList((pageNumber - 1) * commentsPerPage, pageNumber * commentsPerPage);
     }
 
+    // If user logged in, find name and image, and get logout url, otherwise get login url.
+    UserService userService = UserServiceFactory.getUserService();
+    String name = "";
+    String imageUrl = "";
+    String url;
+    if (userService.isUserLoggedIn()) {
+      User user = getUserInfo(userService.getCurrentUser().getUserId());
+      name = user.getName();
+      imageUrl = user.getImageUrl();
+      url = userService.createLogoutURL("/index.html");
+    } else {
+      url = userService.createLoginURL("/index.html");
+    }
+
     // Converts comments into a JSON string using the Gson library.
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount)));
+    response.getWriter().println(gson.toJson(new CommentResult(comments, commentCount, name, imageUrl, url)));
   }
 
   /**
@@ -81,16 +99,55 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
+    UserService userService = UserServiceFactory.getUserService();
     String content = request.getParameter("content");
-    String author = request.getParameter("author");
+    User currentUser = getUserInfo(userService.getCurrentUser().getUserId());
     long timestamp = System.currentTimeMillis();
 
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("content", content);
-    commentEntity.setProperty("author", author);
+    commentEntity.setProperty("author", currentUser.getName());
+    commentEntity.setProperty("imageUrl", currentUser.getImageUrl());
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+  }
+
+  /**
+   * Returns the nickname of the user from id, if one doesn't exist, create a default account.
+   */
+  private User getUserInfo(String id) {
+
+    // Set up datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
+    // Get entity of the user based on id.
+    Query query =
+      new Query("User")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    
+    // If user not in datastore, create new user.
+    if (entity == null) {
+      Entity userEntity = new Entity("User", id);
+      userEntity.setProperty("id", id);
+      
+      String name = "User" + id;
+      userEntity.setProperty("name", name);
+      
+      String imageUrl = "images/default.png";
+      userEntity.setProperty("imageUrl", imageUrl);
+
+      // Store the entity, return new user.
+      datastore.put(userEntity);
+      return new User(id, name, imageUrl);
+    }
+
+    // Otherwise, return the existing user.
+    String name = (String) entity.getProperty("name");
+    String imageUrl = (String) entity.getProperty("imageUrl");
+    return new User(id, name, imageUrl);
   }
 }
