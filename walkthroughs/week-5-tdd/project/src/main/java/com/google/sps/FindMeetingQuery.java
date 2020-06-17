@@ -27,55 +27,112 @@ public final class FindMeetingQuery {
 
     // Save all attendees that should attend and the duration of the meeting.
     Collection<String> attendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
     long duration = request.getDuration();
 
-    // Add all time ranges that someone who is in the meeting will be in to an arrayList.
-    ArrayList<TimeRange> busyTimeRanges = new ArrayList<TimeRange>();
+    // Add all time ranges that someone who is in the meeting will be in to the correct
+    // mandatory, and optional and mandatory time range arrayLists.
+    ArrayList<TimeRange> mandatoryTimeRanges = new ArrayList<TimeRange>();
+    ArrayList<TimeRange> optionalMandatoryTimeRanges = new ArrayList<TimeRange>();
     Iterator<Event> eventsIterator = events.iterator();
     while (eventsIterator.hasNext()) {
       Event event = eventsIterator.next();
-      for (String eventAttendee: event.getAttendees())
+      boolean addedToOptional = false;
+      for (String eventAttendee: event.getAttendees()) {
         if (attendees.contains(eventAttendee)) {
-          busyTimeRanges.add(event.getWhen());
+          mandatoryTimeRanges.add(event.getWhen());
+          optionalMandatoryTimeRanges.add(event.getWhen());
           break;  
         }
+        if (!addedToOptional && optionalAttendees.contains(eventAttendee)) {
+          optionalMandatoryTimeRanges.add(event.getWhen());
+          addedToOptional = true;
+        }
+      }
     }
 
     // Sort the busy time ranges by start time.
-    Collections.sort(busyTimeRanges, TimeRange.ORDER_BY_START);
+    Collections.sort(mandatoryTimeRanges, TimeRange.ORDER_BY_START);
 
-    // While the start time is before the end of the day, continue adding possible meeting times. 
+    // While the start time is before the end of the day, continue adding mandatory meeting times. 
     int startTime = TimeRange.START_OF_DAY;
-    ArrayList<TimeRange> possibleMeetingTimes = new ArrayList<TimeRange>();
+    ArrayList<TimeRange> mandatoryMeetingTimes = new ArrayList<TimeRange>();
     while (startTime < TimeRange.END_OF_DAY) {
       
-      // If no busy times remaining, add remaining window if it fits.
-      if (busyTimeRanges.size() == 0) {
+      // If no mandatory times remaining, add remaining window if it fits.
+      if (mandatoryTimeRanges.size() == 0) {
         if (startTime + duration <= TimeRange.END_OF_DAY) {
-          possibleMeetingTimes.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
+          mandatoryMeetingTimes.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
         }
         startTime = TimeRange.END_OF_DAY;
       }
 
-      // If there is a busy time that starts before the start time, find the next start time. 
-      else if (busyTimeRanges.get(0).start() < startTime) {
-        if (busyTimeRanges.get(0).end() > startTime) {
-          startTime = busyTimeRanges.get(0).end();
+      // If there is a mandatory time that starts before the start time, find the next start time. 
+      else if (mandatoryTimeRanges.get(0).start() < startTime) {
+        if (mandatoryTimeRanges.get(0).end() > startTime) {
+          startTime = mandatoryTimeRanges.get(0).end();
         }
-        busyTimeRanges.remove(0);
+        mandatoryTimeRanges.remove(0);
       }
 
       // Otherwise, if there is a large enough window, add it, otherwise, find the next start time.
       else {
-        if (startTime + duration <= busyTimeRanges.get(0).start()) {
-          possibleMeetingTimes.add(TimeRange.fromStartEnd(startTime, busyTimeRanges.get(0).start(), false)) ;
+        if (startTime + duration <= mandatoryTimeRanges.get(0).start()) {
+          mandatoryMeetingTimes.add(
+              TimeRange.fromStartEnd(startTime, mandatoryTimeRanges.get(0).start(), false));
         }
-        startTime = busyTimeRanges.get(0).end();
-        busyTimeRanges.remove(0);
+        startTime = mandatoryTimeRanges.get(0).end();
+        mandatoryTimeRanges.remove(0);
       }
-    } 
+    }
 
-    // Return all possible meeting times.
-    return possibleMeetingTimes;
+    // Sort the optional and mandatory time ranges by start time.
+    Collections.sort(optionalMandatoryTimeRanges, TimeRange.ORDER_BY_START);
+
+    // While the start time is before the end of the day, continue adding possible meeting times. 
+    startTime = TimeRange.START_OF_DAY;
+    ArrayList<TimeRange> optionalMandatoryMeetingTimes = new ArrayList<TimeRange>();
+    while (startTime < TimeRange.END_OF_DAY) {
+      
+      // If no optional and mandatory times remaining, add remaining window if it fits.
+      if (optionalMandatoryTimeRanges.size() == 0) {
+        if (startTime + duration <= TimeRange.END_OF_DAY) {
+          optionalMandatoryMeetingTimes.add(
+              TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
+        }
+        startTime = TimeRange.END_OF_DAY;
+      }
+
+      // If there is an optional or mandatory time that starts before the start time, add next start time. 
+      else if (optionalMandatoryTimeRanges.get(0).start() < startTime) {
+        if (optionalMandatoryTimeRanges.get(0).end() > startTime) {
+          startTime = optionalMandatoryTimeRanges.get(0).end();
+        }
+        optionalMandatoryTimeRanges.remove(0);
+      }
+
+      // Otherwise, if there is a large enough window, add it, otherwise, find the next start time.
+      else {
+        if (startTime + duration <= optionalMandatoryTimeRanges.get(0).start()) {
+          optionalMandatoryMeetingTimes.add(
+              TimeRange.fromStartEnd(startTime, optionalMandatoryTimeRanges.get(0).start(), false));
+        }
+        startTime = optionalMandatoryTimeRanges.get(0).end();
+        optionalMandatoryTimeRanges.remove(0);
+      }
+    }
+
+    // If there are no attendees, return optional and mandatory times.
+    if (attendees.size() == 0) {
+      return optionalMandatoryMeetingTimes;
+    }
+
+    // If there are no optional and mandatory times, return the mandatory times.
+    else if (optionalMandatoryMeetingTimes.size() == 0) {
+      return mandatoryMeetingTimes;
+    }
+
+    // Otherwise, return optional and mandatory times.
+    return optionalMandatoryMeetingTimes;
   }
 }
