@@ -43,6 +43,8 @@ public final class FindMeetingQueryTest {
   private static final int TIME_0930AM = TimeRange.getTimeInMinutes(9, 30);
   private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 0);
   private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+  private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+  private static final int TIME_0130PM = TimeRange.getTimeInMinutes(13, 30);
 
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;
@@ -50,6 +52,7 @@ public final class FindMeetingQueryTest {
   private static final int DURATION_90_MINUTES = 90;
   private static final int DURATION_1_HOUR = 60;
   private static final int DURATION_2_HOUR = 120;
+  private static final int DURATION_4_HOUR = 240;
 
   private FindMeetingQuery query;
 
@@ -413,6 +416,52 @@ public final class FindMeetingQueryTest {
 
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected = Arrays.asList();
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void longEvents() {
+    // Have event request that is very long, we should only see two options.
+    //
+    // Events  :       |----A----|
+    // Day     : |---------------------|
+    // Options : |--1--|         |--2--|
+
+    Collection<Event> events = Arrays.asList(
+        new Event("Event 1", TimeRange.fromStartDuration(TIME_0830AM, DURATION_60_MINUTES),
+            Arrays.asList(PERSON_A)));
+
+    MeetingRequest request =
+        new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), DURATION_4_HOUR);
+
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected =
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, true));
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void pmEvent() {
+    // Have an event in the evening. We should only see two options.
+    //
+    // Events  :       |----A----|
+    // Day     : |---------------------|
+    // Options : |--1--|         |--2--|
+
+    Collection<Event> events = Arrays.asList(
+        new Event("Event 1", TimeRange.fromStartDuration(TIME_0100PM, DURATION_30_MINUTES),
+            Arrays.asList(PERSON_A)));
+
+    MeetingRequest request =
+        new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), DURATION_30_MINUTES);
+
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected =
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0100PM, false),
+            TimeRange.fromStartEnd(TIME_0130PM, TimeRange.END_OF_DAY, true));
 
     Assert.assertEquals(expected, actual);
   }
