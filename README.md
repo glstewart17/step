@@ -5,7 +5,7 @@ This work is based on the [Google Software Product Sprint](https://g.co/software
 
 ## Portfolio 
 
-I developed a portfolio Site for this project.
+The primary focus of this program was to develop a portfolio site.
 
 ### Design
 
