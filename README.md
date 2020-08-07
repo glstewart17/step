@@ -33,4 +33,4 @@ I developed a portfolio Site for this project.
 
 ## Testing 
 
-There are also completed Java testing problemsets in this repository.
+There was also a Java testing component to this program. You can find the completed testing problems in the Week 5 folder.
